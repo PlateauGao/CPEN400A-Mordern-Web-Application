@@ -77,11 +77,18 @@ ul {
     margin: 24px;
     float: inherit;
     display: inline-flex;
-    background-color: #3399ff;
+}
+
+.product:hover {
+    background-color: #3399ff
 }
 
 .product img {
     width: 160px;
     height: 160px;
     margin: 20px;
+}
+
+.menuItem:hover {
+    background-color: darkblue
 }
