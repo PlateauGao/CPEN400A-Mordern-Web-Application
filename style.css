@@ -9,14 +9,14 @@ body {
 #header {
     height: 200px;
     width: 1000px;
-    background-color: whitesmoke;
+    background-color: transparent;
     margin: auto;
 }
 
 #content {
     height: 1000px;
     width: 1000px;
-    background-color: whitesmoke;
+    background-color: transparent;
     margin: auto;
 }
 
