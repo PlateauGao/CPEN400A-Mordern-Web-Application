@@ -1,0 +1,60 @@
+span {
+    color: red;
+    color: yell
+}
+
+#header {
+    height: 200px;
+    width: 1000px;
+    background-color: whitesmoke;
+}
+
+#content {
+    height: 1000px;
+    width: 1000px;
+    background-color: whitesmoke;
+}
+
+#footer {
+    height: 100px;
+    width: 1000px;
+    background-color: whitesmoke;
+}
+
+#welcome {
+    height: 100px;
+    width: 400px;
+    object-fit: fill;
+}
+
+#menu {
+    width: 200px;
+    height: 1000px;
+    background-color: #00ffff;
+    padding: 0
+}
+
+#productList {
+    width: 700px;
+    height: 1000px;
+    float: right;
+    background-color: darkseagreen;
+}
+
+.menuItem {
+    display: block;
+    font-size: 50px;
+    position: static;
+    width: 200px;
+    height: 60px;
+    margin-bottom: 20px;
+    background-color: lightskyblue;
+    border: 1px solid #000000;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    display: inline;
+    float: left;
+}
