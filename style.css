@@ -37,14 +37,16 @@ body {
     width: 200px;
     height: 1000px;
     background-color: darkseagreen;
-    padding: 0
+    padding: 0;
+    float: left;
 }
 
 #productList {
     width: 770px;
     height: 1000px;
-    float: right;
+    float: left;
     background-color: darkseagreen;
+    margin-left: 30px;
 }
 
 .menuItem {
@@ -68,7 +70,6 @@ ul {
     margin: 0;
     padding: 0;
     display: inline;
-    float: left;
 }
 
 .product {
@@ -91,4 +92,20 @@ ul {
 
 .menuItem:hover {
     background-color: darkblue
+}
+
+#email {
+    opacity: 0;
+    background-color: black;
+}
+
+#email:hover {
+    cursor: pointer;
+    display: block;
+    opacity: 1;
+    background-color: whitesmoke;
+}
+
+.box {
+    position: absolute;
 }
