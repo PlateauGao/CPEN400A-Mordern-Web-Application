@@ -1,24 +1,30 @@
 span {
     color: red;
-    color: yell
+}
+
+body {
+    background: linear-gradient( 160deg, #4567b2 20%, #8ab9ff 20%, #8ab9ff 80%, #4567b2 80%);
 }
 
 #header {
     height: 200px;
     width: 1000px;
     background-color: whitesmoke;
+    margin: auto;
 }
 
 #content {
     height: 1000px;
     width: 1000px;
     background-color: whitesmoke;
+    margin: auto;
 }
 
 #footer {
     height: 100px;
     width: 1000px;
-    background-color: whitesmoke;
+    background-color: cadetblue;
+    margin: auto;
 }
 
 #welcome {
@@ -30,12 +36,12 @@ span {
 #menu {
     width: 200px;
     height: 1000px;
-    background-color: #00ffff;
+    background-color: darkseagreen;
     padding: 0
 }
 
 #productList {
-    width: 700px;
+    width: 770px;
     height: 1000px;
     float: right;
     background-color: darkseagreen;
@@ -48,8 +54,14 @@ span {
     width: 200px;
     height: 60px;
     margin-bottom: 20px;
-    background-color: lightskyblue;
-    border: 1px solid #000000;
+    font-style: unset;
+    font-size: 40px;
+    background-color: #3399ff;
+    color: azure;
+}
+
+.menuItem:hover {
+    background-color: darkblue
 }
 
 ul {
@@ -57,4 +69,19 @@ ul {
     padding: 0;
     display: inline;
     float: left;
+}
+
+.product {
+    width: 200px;
+    height: 200px;
+    margin: 24px;
+    float: inherit;
+    display: inline-flex;
+    background-color: #3399ff;
+}
+
+.product img {
+    width: 160px;
+    height: 160px;
+    margin: 20px;
 }
