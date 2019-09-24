@@ -3,7 +3,9 @@ span {
 }
 
 body {
-    background: linear-gradient( 160deg, #4567b2 20%, #8ab9ff 20%, #8ab9ff 80%, #4567b2 80%);
+    width: 1000px;
+    margin: auto;
+    /*   background: linear-gradient( 160deg, #4567b2 20%, #8ab9ff 20%, #8ab9ff 80%, #4567b2 80%);*/
 }
 
 #header {
@@ -51,20 +53,19 @@ body {
 
 .menuItem {
     display: block;
-    font-size: 50px;
     position: static;
     width: 200px;
     height: 60px;
     margin-bottom: 20px;
-    font-style: unset;
-    font-size: 40px;
     background-color: #3399ff;
-    color: azure;
-    text-indent: 7px;
 }
 
 .menuItem:hover {
-    background-color: darkblue
+    background-color: darkblue;
+}
+
+.menuItem p:hover {
+    color: black;
 }
 
 ul {
@@ -91,20 +92,10 @@ ul {
     margin: 20px;
 }
 
-.menuItem:hover {
-    background-color: darkblue
-}
-
 #email {
-    opacity: 0;
-    background-color: black;
-}
-
-#email:hover {
+    opacity: 1;
     cursor: pointer;
     display: block;
-    opacity: 1;
-    background-color: whitesmoke;
 }
 
 .box {
@@ -116,12 +107,12 @@ ul {
     opacity: 1;
 }
 
-.boximg {
+.boxImg {
     position: absolute;
     opacity: 0.8;
 }
 
-.addbutton {
+.addButton {
     position: absolute;
     background-color: green;
     color: whitesmoke;
@@ -132,11 +123,10 @@ ul {
     margin-left: 30px;
     margin-top: 70px;
     line-height: 10px;
-    text-indent: 17px;
     opacity: 0.8;
 }
 
-.rebutton {
+.removeButton {
     position: absolute;
     background-color: rgb(235, 80, 80);
     opacity: 0.8;
@@ -148,5 +138,44 @@ ul {
     margin-left: 110px;
     margin-top: 70px;
     line-height: 10px;
+}
+
+.price {
+    position: absolute;
+    background-color: rgb(235, 40, 40);
+    opacity: 0.8;
+    color: whitesmoke;
+    font-size: 16px;
+    height: 40px;
+    width: 160px;
+    text-align: justify;
+    margin-top: 140px;
+    margin-left: 20px;
+    line-height: 10px;
     text-indent: 3px;
+}
+
+.addButton p {
+    text-align: center;
+    font: caption;
+}
+
+.removeButton p {
+    text-align: center;
+    font: caption;
+}
+
+.price p {
+    text-align: center;
+    font: caption;
+}
+
+.menuItem p {
+    text-align: center;
+    font: caption;
+    color: azure;
+    font-size: 40px;
+    width: 200px;
+    height: 60px;
+    margin-bottom: 20px;
 }
