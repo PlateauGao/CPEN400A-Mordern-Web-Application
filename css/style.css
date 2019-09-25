@@ -5,7 +5,7 @@ span {
 body {
     width: 1000px;
     margin: auto;
-    /*   background: linear-gradient( 160deg, #4567b2 20%, #8ab9ff 20%, #8ab9ff 80%, #4567b2 80%);*/
+    background: linear-gradient( 160deg, #4567b2 20%, #8ab9ff 20%, #8ab9ff 80%, #4567b2 80%);
 }
 
 #header {

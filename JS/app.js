@@ -1,13 +1,3 @@
-function Store(initialStock) {
-    this.stock = initialStock;
-    this.cart = [];
-    this.addItemToCart = function(itemName) {
-
-    }
-    this.removeItemFromCart = function(itemName) {
-
-    }
-}
 var keys = [
     "Box1", "Box2", "Clothes1", "Clothes2", "Jeans", "KeyboardCombo", "Keyboard", "Mice", "PC1", "PC2", "PC3", "Tent"
 ];
@@ -35,8 +25,42 @@ for (key in products) {
 }
 */
 
+function Store(initialStock) {
+    this.stock = initialStock;
+    var cart = [];
+    this.addItemToCart = function(itemName) {
+        alert(itemName);
+        cart.push("-1");
+        alert(cart[0]);
+        alert(cart.length);
+        alert("0");
+
+    }
+    this.removeItemFromCart = function(itemName) {
+
+    }
+    this.temp = function() {
+        alert("test");
+    }
+}
+
 var store = new Store(products);
 
-function fun() {
-    alert("click");
+
+function showCart() {
+    alert("Button 1 was clicked!");
+    alert("Button 2 was clicked!");
+    for (item in cart) {
+        alert(item.keys + ":");
+    }
+    alert("Button 3 was clicked!");
+}
+
+
+document.getElementById('show').onclick = function() {
+    showCart();
+}
+document.getElementById('Box1').onclick = function() {
+
+    store.addItemToCart(this.id);
 }

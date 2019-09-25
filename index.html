@@ -5,18 +5,18 @@
     <meta charset="utf-8">
     <title>sample</title>
     <link href="css/style.css" rel="stylesheet">
-    <script src="js/app.js" type="text/javascript"></script>
+
 </head>
 
 <body>
     <div id="header">
         <img id="banner" src="https://brand.ubc.ca/files/2018/09/Logos_1_2CrestDownload_768px.jpg" width="200px" height="200px">
-        <img id="logo" src="https://www.istrategyconference.com/wp-content/uploads/2019/03/1280px-Amazon_logo_plain.svg.png" style="width:770px;height:200px;float:right;">
+        <img id="logo" src="https://brand3.sites.olt.ubc.ca/files/2018/09/5NarrowLogo_ex_768.png" style="width:700px;height:200px;float:right;">
 
     </div>
 
     <div id="content">
-        <button onclick="fun()">Test</button>
+        <button id="show">Show</button>
         <ul id="menu">
             <li class="menuItem">
                 <p>All Items</p>
@@ -45,6 +45,7 @@
         </ul>
         <ul id="productList">
             <li class="product">
+
                 <img src="https://github.com/PlateauGao/assignments/blob/master/assignments/images/Box1_$10.png?raw=true">
 
                 <div class="box">
@@ -52,12 +53,9 @@
                     <div class="boxImg">
                         <img src="https://icons-for-free.com/iconfiles/png/512/buy+citycons+mall+shopping+icon-1320136423977087098.png">
                     </div>
-                    <div class="addButton">
-                        <p>Add</p>
-                    </div>
-                    <div class="removeButton">
-                        <p>Remove</p>
-                    </div>
+                    <button class="addButton" id="Box1">Add</button>
+                    <button class="removeButton">Remove</button>
+
                     <div class="price">
                         <p>Price</p>
                     </div>
@@ -260,5 +258,6 @@
         <span id="email">yuangao@alumni.ubc.ca</span>
     </div>
 </body>
+<script src="js/app.js" type="text/javascript"></script>
 
 </html>
