@@ -29,12 +29,11 @@ function Store(initialStock) {
     this.stock = initialStock;
     cart = [];
     this.addItemToCart = function(itemName) {
-        alert(itemName);
+        console.log(itemName);
         cart.push(products[itemName]);
-        alert(cart.length);
-        alert(cart[0].label)
-        alert("Done");
-
+        console.log(cart.length);
+        console.log(cart[0].label)
+        console.log("Done");
     }
     this.removeItemFromCart = function(itemName) {
 
@@ -42,21 +41,17 @@ function Store(initialStock) {
     this.getCart = function() {
         return cart;
     }
+
 }
 
-var store = new Store(products);
-
+let store = new Store(products);
 
 function showCart(cart) {
-    alert(store.getCart().length);
-    alert("Done");
-}
+    console.log("Test1");
+    var a = 0;
+    console.log(a);
+    a = cart;
+    console.log(a);
 
-
-document.getElementById('show').onclick = function() {
-    showCart(store.cart);
-}
-document.getElementById('Box1').onclick = function() {
-
-    store.addItemToCart(this.id);
+    console.log("Button 3 was clicked!");
 }
