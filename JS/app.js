@@ -27,15 +27,15 @@ for (key in products) {
 
 function Store(initialStock) {
     this.stock = initialStock;
-    let cart = {};
+    this.cart = {};
     this.addItemToCart = function(itemName) {
-        alert("0")
-        if (!cart.hasOwnProperty(itemName)) {
-            cart[itemName] = 1;
-            alert("1");
+
+        if (!this.cart.hasOwnProperty(itemName)) {
+            this.cart[itemName] = 1;
+
         } else {
-            cart[itemName]++;
-            alert("2");
+            this.cart[itemName]++;
+
         }
         alert("done");
 
@@ -44,7 +44,7 @@ function Store(initialStock) {
 
     }
     this.getCart = function() {
-        return cart;
+        return this.cart;
     }
 }
 
@@ -64,7 +64,7 @@ function showCart(cart) {
 
 
 document.getElementById('show').onclick = function() {
-    showCart(store.getCart());
+    showCart(store.cart());
 }
 document.getElementById('Box1').onclick = function() {
 
@@ -77,4 +77,4 @@ function timeout() {
         timeout();
     }, 2000);
 }
-timeout();
+//timeout();
