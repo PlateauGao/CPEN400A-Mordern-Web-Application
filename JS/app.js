@@ -27,13 +27,17 @@ for (key in products) {
 
 function Store(initialStock) {
     this.stock = initialStock;
-    cart = [];
+    let cart = {};
     this.addItemToCart = function(itemName) {
-        alert(itemName);
-        cart.push(products[itemName]);
-        alert(cart.length);
-        alert(cart[0].label)
-        alert("Done");
+        alert("0")
+        if (!cart.hasOwnProperty(itemName)) {
+            cart[itemName] = 1;
+            alert("1");
+        } else {
+            cart[itemName]++;
+            alert("2");
+        }
+        alert("done");
 
     }
     this.removeItemFromCart = function(itemName) {
@@ -48,15 +52,29 @@ var store = new Store(products);
 
 
 function showCart(cart) {
-    alert(store.getCart().length);
+    let v = [];
+    alert("test");
+
+    for (var key in cart) {
+        alert(key + " : " + cart[key]);
+    }
+
     alert("Done");
 }
 
 
 document.getElementById('show').onclick = function() {
-    showCart(store.cart);
+    showCart(store.getCart());
 }
 document.getElementById('Box1').onclick = function() {
 
     store.addItemToCart(this.id);
 }
+
+function timeout() {
+    setTimeout(function() {
+        alert("testTime");
+        timeout();
+    }, 2000);
+}
+timeout();
