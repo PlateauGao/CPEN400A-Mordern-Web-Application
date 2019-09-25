@@ -36,3 +36,7 @@ for (key in products) {
 */
 
 var store = new Store(products);
+
+function fun() {
+    alert("click");
+}
