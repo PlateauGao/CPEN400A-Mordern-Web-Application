@@ -1,7 +1,8 @@
 var keys = [
     "Box1", "Box2", "Clothes1", "Clothes2", "Jeans", "KeyboardCombo", "Keyboard", "Mice", "PC1", "PC2", "PC3", "Tent"
 ];
-var labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
+
+var labels = ["Box White", "Boxes Set", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 var prices = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
 var quantities = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 var imageUrl = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
@@ -25,15 +26,20 @@ for (key in products) {
 }
 */
 
-function Store(initialStock) {
+let Store = function(initialStock) {
+
     this.stock = initialStock;
     this.cart = {};
-    this.addItemToCart = function(itemName) {
+    this.addItemToCart = function(itemName1) {
 
+        var itemName = itemName1.slice(1);
+        alert("added:" + itemName);
         if (!this.cart.hasOwnProperty(itemName)) {
+            //if this.stock[id].quatities==0
             this.cart[itemName] = 1;
 
         } else {
+            //
             this.cart[itemName]++;
 
         }
@@ -50,26 +56,37 @@ function Store(initialStock) {
 
 var store = new Store(products);
 
-
 function showCart(cart) {
     let v = [];
     alert("test");
-
+    let output = []
     for (var key in cart) {
-        alert(key + " : " + cart[key]);
-    }
 
+        output = output + products[key].label + ": " + cart[key] + "\n";
+    }
+    alert(output);
     alert("Done");
 }
 
 
 document.getElementById('show').onclick = function() {
-    showCart(store.cart());
+    showCart(store.getCart());
 }
-document.getElementById('Box1').onclick = function() {
 
-    store.addItemToCart(this.id);
+
+let addfunction = function(id) {
+    return function() {
+        alert("start");
+        store.addItemToCart(id);
+    }
 }
+
+keys.forEach(function(e) {
+    var t = "a" + e;
+    document.getElementById(t).onclick = addfunction(t);
+})
+
+
 
 function timeout() {
     setTimeout(function() {
@@ -77,4 +94,4 @@ function timeout() {
         timeout();
     }, 2000);
 }
-//timeout();
+//timeout()
