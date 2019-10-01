@@ -112,29 +112,29 @@ ul {
     opacity: 0.8;
 }
 
-.addButton {
+.btn-add {
     position: absolute;
     background-color: green;
     color: whitesmoke;
-    font-size: 16px;
+    font-size: 10px;
     height: 40px;
     width: 60px;
-    text-align: justify;
+    text-align: center;
     margin-left: 30px;
     margin-top: 70px;
     line-height: 10px;
     opacity: 0.8;
 }
 
-.removeButton {
+.btn-remove {
     position: absolute;
     background-color: rgb(235, 80, 80);
     opacity: 0.8;
     color: whitesmoke;
-    font-size: 16px;
+    font-size: 10px;
     height: 40px;
     width: 60px;
-    text-align: justify;
+    text-align: center;
     margin-left: 110px;
     margin-top: 70px;
     line-height: 10px;

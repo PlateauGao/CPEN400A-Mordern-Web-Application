@@ -2,96 +2,115 @@ var keys = [
     "Box1", "Box2", "Clothes1", "Clothes2", "Jeans", "KeyboardCombo", "Keyboard", "Mice", "PC1", "PC2", "PC3", "Tent"
 ];
 
-var labels = ["Box White", "Boxes Set", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
+var labels = keys;
+
+var imageUrls = [
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Box1_$10.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Box2_$5.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Clothes1_$20.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Clothes2_$30.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Jeans_$50.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/KeyboardCombo_$40.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Keyboard_$20.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Mice_$20.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/PC1_$350.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/PC2_$400.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/PC3_$300.png?raw=true",
+    "https://github.com/PlateauGao/assignments/blob/master/assignments/images/Tent_$100.png?raw=true"
+];
+
 var prices = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
 var quantities = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
-var imageUrl = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 
-function Product(label, imageUrl, price, quantity) {
-    this.label = label;
-    this.price = price;
-    this.imageUrl = imageUrl;
-    this.quantity = quantity;
-}
-var products = {}; /*associate array */
-
-for (let i = 0; i != 20; i++) {
-    products[keys[i]] = new Product(labels[i], prices[i], imageUrl[i], quantities[i]);
-}
-/*
-for (key in products) {
-    val = products[key];
-    console.log(val.price);
-    console.log(val.label);
-}
-*/
-
-let Store = function(initialStock) {
-
+var Store = function (initialStock) {
     this.stock = initialStock;
     this.cart = {};
-    this.addItemToCart = function(itemName1) {
+};
 
-        var itemName = itemName1.slice(1);
-        alert("added:" + itemName);
-        if (!this.cart.hasOwnProperty(itemName)) {
-            //if this.stock[id].quatities==0
-            this.cart[itemName] = 1;
+Store.prototype.addItemToCart = function (itemName) {
+    if (this.stock[itemName].quantity === 0) {
+        alert(itemName + " sold out.");
+        return;
+    } else
+        this.stock[itemName].quantity--;
+    alert("Adding " + itemName + " to cart.");
+    alert(itemName + " " + this.stock[itemName].quantity + " on the stock.");
+    if (!this.cart.hasOwnProperty(itemName))
+        this.cart[itemName] = 1;
+    else
+        this.cart[itemName]++;
+    alert(itemName + " " + this.cart[itemName] + " in the cart.");
+    alert("Done.");
+};
 
-        } else {
-            //
-            this.cart[itemName]++;
-
-        }
-        alert("done");
-
+Store.prototype.removeItemFromCart = function (itemName) {
+    if (!this.cart.hasOwnProperty(itemName)) {
+        alert("No " + itemName + " in the cart.");
+        return;
+    } else {
+        alert("Removing " + itemName + " from cart.");
+        this.cart[itemName]--;
+        if (this.cart[itemName] === 0)
+            delete this.cart[itemName];
+        alert("Done.");
     }
-    this.removeItemFromCart = function(itemName) {
+    this.stock[itemName].quantity++;
+};
 
-    }
-    this.getCart = function() {
-        return this.cart;
-    }
-}
+var products = {};
+
+var Product = function (label, imageUrl, price, quantity) {
+    this.label = label;
+    this.imageUrl = imageUrl;
+    this.price = price;
+    this.quantity = quantity;
+};
+
+for (var i = 0; i < 12; i++)
+    products[keys[i]] = new Product(labels[i], imageUrls[i], prices[i], quantities[i]);
 
 var store = new Store(products);
 
-function showCart(cart) {
-    let v = [];
-    alert("test");
-    let output = []
-    for (var key in cart) {
-
-        output = output + products[key].label + ": " + cart[key] + "\n";
-    }
-    alert(output);
-    alert("Done");
-}
-
-
-document.getElementById('show').onclick = function() {
-    showCart(store.getCart());
-}
-
-
-let addfunction = function(id) {
+function addToCart(itemName) {
     return function() {
-        alert("start");
-        store.addItemToCart(id);
+        store.addItemToCart(itemName);
+        inactiveTime = 0;
     }
 }
 
-keys.forEach(function(e) {
-    var t = "a" + e;
-    document.getElementById(t).onclick = addfunction(t);
-})
-
-
-
-function timeout() {
-    setTimeout(function() {
-        alert("testTime");
-        timeout();
-    }, 2000);
+function removeFromCart(itemName) {
+    return function() {
+        store.removeItemFromCart(itemName);
+        inactiveTime = 0;
+    }
 }
-//timeout()
+
+function showCart(cart) {
+    var itemList = "";
+    for (var item in cart)
+        itemList += item + ": " + cart[item] + "\n";
+    inactiveTime = 0;
+    alert(itemList);
+}
+
+keys.forEach(function (itemName) {
+    var addButtonID = "add" + itemName;
+    var removeButtonID = "remove" + itemName;
+    document.getElementById(addButtonID).onclick = addToCart(itemName);
+    document.getElementById(removeButtonID).onclick = removeFromCart(itemName);
+});
+
+document.getElementById('btn-show-cart').onclick = function () {
+    showCart(store.cart);
+};
+
+var inactiveTime = 0;
+
+setInterval(function () {
+    if (inactiveTime < 5)
+        inactiveTime++;
+    else {
+        alert('Hey there! Are you still planning to buy something?');
+        inactiveTime = 0;
+    }
+}, 1000);
