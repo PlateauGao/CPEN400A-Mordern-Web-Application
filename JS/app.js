@@ -31,14 +31,17 @@ Store.prototype.addItemToCart = function(itemName) {
     if (this.stock[itemName].quantity === 0) {
         alert(itemName + " sold out.");
         return;
-    } else
+    } else {
         this.stock[itemName].quantity--;
-    alert("Adding " + store.stock[itemName].label + " to cart.");
+    }
+
+    alert("Add " + store.stock[itemName].label + " to the cart.");
     //   alert(itemName + " " + this.stock[itemName].quantity + " on the stock.");
     if (!this.cart.hasOwnProperty(itemName))
         this.cart[itemName] = 1;
-    else
+    else {
         this.cart[itemName]++;
+    }
     // alert(itemName + " " + this.cart[itemName] + " in the cart.");
     //alert("Done.");
 };
@@ -47,13 +50,14 @@ Store.prototype.removeItemFromCart = function(itemName) {
     if (!this.cart.hasOwnProperty(itemName)) {
         alert("No " + itemName + " in the cart.");
         return;
-    } else {
-        alert("Removing " + store.stock[itemName].label + " from cart.");
-        this.cart[itemName]--;
-        if (this.cart[itemName] === 0)
-            delete this.cart[itemName];
-        // alert("Done.");
     }
+
+    alert("Removing " + store.stock[itemName].label + " from cart.");
+    this.cart[itemName]--;
+    if (this.cart[itemName] === 0)
+        delete this.cart[itemName];
+    // alert("Done.");
+
     this.stock[itemName].quantity++;
 };
 
@@ -66,7 +70,7 @@ var Product = function(label, imageUrl, price, quantity) {
     this.quantity = quantity;
 };
 
-for (var i = 0; i < 12; i++)
+for (var i = 0; i < keys.length; i++)
     products[keys[i]] = new Product(labels[i], imageUrls[i], prices[i], quantities[i]);
 
 var store = new Store(products);
@@ -90,7 +94,7 @@ function showCart(cart) {
     for (var item in cart)
         itemList += store.stock[item].label + ": " + cart[item] + "\n";
     inactiveTime = 0;
-    alert(itemList);
+    itemList == "" ? alert("The cart is empty") : alert(itemList);
 }
 
 keys.forEach(function(itemName) {
