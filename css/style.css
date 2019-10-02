@@ -179,3 +179,18 @@ ul {
     height: 60px;
     margin-bottom: 20px;
 }
+
+#btn-show-cart {
+    position: absolute;
+    background-color: cornflowerblue;
+    opacity: 0.8;
+    color: whitesmoke;
+    font-size: 20px;
+    height: 60px;
+    width: 120px;
+    text-align: center;
+    margin-right: 0px;
+    margin-left: 680px;
+    margin-top: 140px;
+    line-height: 10px
+}
