@@ -33,14 +33,14 @@ Store.prototype.addItemToCart = function(itemName) {
         return;
     } else
         this.stock[itemName].quantity--;
-    alert("Adding " + itemName + " to cart.");
-    alert(itemName + " " + this.stock[itemName].quantity + " on the stock.");
+    alert("Adding " + store.stock[itemName].label + " to cart.");
+    //   alert(itemName + " " + this.stock[itemName].quantity + " on the stock.");
     if (!this.cart.hasOwnProperty(itemName))
         this.cart[itemName] = 1;
     else
         this.cart[itemName]++;
-    alert(itemName + " " + this.cart[itemName] + " in the cart.");
-    alert("Done.");
+    // alert(itemName + " " + this.cart[itemName] + " in the cart.");
+    //alert("Done.");
 };
 
 Store.prototype.removeItemFromCart = function(itemName) {
@@ -48,11 +48,11 @@ Store.prototype.removeItemFromCart = function(itemName) {
         alert("No " + itemName + " in the cart.");
         return;
     } else {
-        alert("Removing " + itemName + " from cart.");
+        alert("Removing " + store.stock[itemName].label + " from cart.");
         this.cart[itemName]--;
         if (this.cart[itemName] === 0)
             delete this.cart[itemName];
-        alert("Done.");
+        // alert("Done.");
     }
     this.stock[itemName].quantity++;
 };
@@ -113,4 +113,4 @@ setInterval(function() {
         alert('Hey there! Are you still planning to buy something?');
         inactiveTime = 0;
     }
-}, 1000);
+}, 100000);
