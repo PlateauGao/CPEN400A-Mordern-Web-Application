@@ -78,14 +78,19 @@ var store = new Store(products);
 function addToCart(itemName) {
     return function() {
         store.addItemToCart(itemName);
+        timerStop();
         inactiveTime = 0;
+        timeID = setInterval(timerStart, 1000);
+
     }
 }
 
 function removeFromCart(itemName) {
     return function() {
         store.removeItemFromCart(itemName);
+        timerStop();
         inactiveTime = 0;
+        timeID = setInterval(timerStart, 1000);
     }
 }
 
@@ -93,7 +98,9 @@ function showCart(cart) {
     var itemList = "";
     for (var item in cart)
         itemList += store.stock[item].label + ": " + cart[item] + "\n";
+    timerStop();
     inactiveTime = 0;
+    timeID = setInterval(timerStart, 1000);
     itemList == "" ? alert("The cart is empty") : alert(itemList);
 }
 
@@ -110,11 +117,19 @@ document.getElementById('btn-show-cart').onclick = function() {
 
 var inactiveTime = 0;
 
-setInterval(function() {
-    if (inactiveTime < 5)
+var timeID;
+var timerStart = function() {
+    if (inactiveTime < 3)
         inactiveTime++;
     else {
         alert('Hey there! Are you still planning to buy something?');
+        timerStop();
         inactiveTime = 0;
     }
-}, 100000);
+}
+timeID = setInterval(timerStart, 100);
+
+var timerStop = function() {
+    clearTimeout(timeID);
+}
+timerStop();
