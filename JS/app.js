@@ -27,6 +27,21 @@ var Store = function(initialStock) {
     this.cart = {};
 };
 
+var products = {};
+
+var Product = function(label, imageUrl, price, quantity) {
+    this.label = label;
+    this.imageUrl = imageUrl;
+    this.price = price;
+    this.quantity = quantity;
+};
+
+for (var i = 0; i < keys.length; i++)
+    products[keys[i]] = new Product(labels[i], imageUrls[i], prices[i], quantities[i]);
+
+var store = new Store(products);
+
+
 Store.prototype.addItemToCart = function(itemName) {
     if (this.stock[itemName].quantity === 0) {
         alert(itemName + " sold out.");
@@ -35,7 +50,7 @@ Store.prototype.addItemToCart = function(itemName) {
         this.stock[itemName].quantity--;
     }
 
-    alert("Add " + store.stock[itemName].label + " to the cart.");
+    alert("Add " + itemName + " to the cart.");
     //   alert(itemName + " " + this.stock[itemName].quantity + " on the stock.");
     if (!this.cart.hasOwnProperty(itemName))
         this.cart[itemName] = 1;
@@ -52,7 +67,7 @@ Store.prototype.removeItemFromCart = function(itemName) {
         return;
     }
 
-    alert("Removing " + store.stock[itemName].label + " from cart.");
+    alert("Removing " + itemName + " from cart.");
     this.cart[itemName]--;
     if (this.cart[itemName] === 0)
         delete this.cart[itemName];
@@ -61,19 +76,6 @@ Store.prototype.removeItemFromCart = function(itemName) {
     this.stock[itemName].quantity++;
 };
 
-var products = {};
-
-var Product = function(label, imageUrl, price, quantity) {
-    this.label = label;
-    this.imageUrl = imageUrl;
-    this.price = price;
-    this.quantity = quantity;
-};
-
-for (var i = 0; i < keys.length; i++)
-    products[keys[i]] = new Product(labels[i], imageUrls[i], prices[i], quantities[i]);
-
-var store = new Store(products);
 
 function addToCart(itemName) {
     return function() {
