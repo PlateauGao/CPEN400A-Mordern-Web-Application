@@ -121,17 +121,17 @@ var inactiveTime = 0;
 
 var timeID;
 var timerStart = function() {
-    if (inactiveTime < 3)
+    if (inactiveTime < 30)
         inactiveTime++;
     else {
         alert('Hey there! Are you still planning to buy something?');
         timerStop();
         inactiveTime = 0;
     }
-};
+}
 timeID = setInterval(timerStart, 100);
 
 var timerStop = function() {
     clearTimeout(timeID);
-};
+}
 timerStop();
