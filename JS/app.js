@@ -128,10 +128,10 @@ var timerStart = function() {
         timerStop();
         inactiveTime = 0;
     }
-}
+};
 timeID = setInterval(timerStart, 100);
 
 var timerStop = function() {
     clearTimeout(timeID);
-}
+};
 timerStop();
