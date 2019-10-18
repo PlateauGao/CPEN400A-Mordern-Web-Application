@@ -26,7 +26,10 @@ var quantities = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 var Store = function(initialStock) {
     this.stock = initialStock;
     this.cart = {};
+    this.onUpdate = null;
 };
+
+
 
 var products = {};
 
@@ -42,7 +45,16 @@ for (var i = 0; i < keys.length; i++)
 
 var store = new Store(products);
 
+store.onUpdate = function(itemName) {
 
+    var li = document.createElement('li');
+    renderProduct(li, this, itemName);
+    var previous = document.getElementById(itemName);
+    previous.parentNode.replaceChild(li, previous);
+
+    return 0
+
+}
 Store.prototype.addItemToCart = function(itemName) {
 
 
@@ -60,8 +72,8 @@ Store.prototype.addItemToCart = function(itemName) {
     else {
         this.cart[itemName]++;
     }
-    // alert(itemName + " " + this.cart[itemName] + " in the cart.");
-    //alert("Done.");
+
+    this.onUpdate(itemName);
 };
 
 Store.prototype.removeItemFromCart = function(itemName) {
@@ -77,6 +89,7 @@ Store.prototype.removeItemFromCart = function(itemName) {
     // alert("Done.");
 
     this.stock[itemName].quantity++;
+    this.onUpdate(itemName);
 };
 
 
@@ -97,16 +110,6 @@ function removeFromCart(itemName) {
     inactiveTime = 0;
     timeID = setInterval(timerStart, 1000);
 
-}
-
-function showCart(cart) {
-    var itemList = "";
-    for (var item in cart)
-        itemList += store.stock[item].label + ": " + cart[item] + "\n";
-    timerStop();
-    inactiveTime = 0;
-    timeID = setInterval(timerStart, 1000);
-    itemList == "" ? alert("The cart is empty") : alert(itemList);
 }
 
 
@@ -137,23 +140,26 @@ function renderProduct(container, storeInstance, itemName) {
     var img = document.createElement('img');
     img.setAttribute('src', storeInstance.stock[itemName].imageUrl);
 
-    var addButton = document.createElement('button');
-    addButton.setAttribute('class', "btn-add");
-    var addButtonId = "add" + itemName;
-    addButton.setAttribute('id', addButtonId);
-    addButton.appendChild(document.createTextNode("Add"));
-    var addClick = "addToCart(\"" + itemName + "\")";
-    addButton.setAttribute('onclick', addClick)
-
-
-    var removeButton = document.createElement('button');
-    removeButton.setAttribute('class', "btn-remove");
-    var removeButtonId = "remove" + itemName;
-    removeButton.setAttribute('id', addButtonId);
-    removeButton.appendChild(document.createTextNode("Remove"));
-    var removeClick = "removeFromCart(\"" + itemName + "\")";
-    removeButton.setAttribute('onclick', removeClick)
-
+    if (store.stock[itemName].quantity > 0) {
+        var addButton = document.createElement('button');
+        addButton.setAttribute('class', "btn-add");
+        var addButtonId = "add" + itemName;
+        addButton.setAttribute('id', addButtonId);
+        addButton.appendChild(document.createTextNode("Add"));
+        var addClick = "addToCart(\"" + itemName + "\")";
+        addButton.setAttribute('onclick', addClick)
+        container.appendChild(addButton);
+    }
+    if (store.cart.hasOwnProperty(itemName)) {
+        var removeButton = document.createElement('button');
+        removeButton.setAttribute('class', "btn-remove");
+        var removeButtonId = "remove" + itemName;
+        removeButton.setAttribute('id', addButtonId);
+        removeButton.appendChild(document.createTextNode("Remove"));
+        var removeClick = "removeFromCart(\"" + itemName + "\")";
+        removeButton.setAttribute('onclick', removeClick)
+        container.appendChild(removeButton);
+    }
     var priceTag = document.createElement('div');
     priceTag.setAttribute('class', "price");
     var priceLabel = document.createElement('p')
@@ -162,12 +168,11 @@ function renderProduct(container, storeInstance, itemName) {
 
 
 
-
-
     container.appendChild(img);
-    container.appendChild(addButton);
-    container.appendChild(removeButton);
+
+
     container.appendChild(priceTag);
+    return container;
 }
 
 function renderProductList(container, storeInstance) {
@@ -176,17 +181,97 @@ function renderProductList(container, storeInstance) {
 
     for (var i = 0; i != keys.length; i++) {
         var li = document.createElement('li');
-        renderProduct(li, store, keys[i]);
+        li = renderProduct(li, store, keys[i]);
         ul.appendChild(li);
     }
 
     container.appendChild(ul);
 
 }
+
+// function showCart(cart) {
+//     var itemList = "";
+//     for (var item in cart)
+//         itemList += store.stock[item].label + ": " + cart[item] + "\n";
+//     timerStop();
+//     inactiveTime = 0;
+//     timeID = setInterval(timerStart, 1000);
+//     itemList == "" ? alert("The cart is empty") : alert(itemList);
+// }
+
+
+function showCart() {
+    var myModal = document.getElementById("myModal")
+    myModal.style.display = "block";
+
+
+    renderCart(document.getElementById("modal-content"), store)
+}
+
+function renderCart(container, storeInstance) {
+    var table = document.createElement('table');
+
+
+    var row = document.createElement('tr');
+
+    var col1 = document.createElement('td');
+    col1.appendChild(document.createTextNode("Item Name"))
+    var col2 = document.createElement('td');
+    col2.appendChild(document.createTextNode("Quantity"))
+    var col3 = document.createElement('td');
+    col3.appendChild(document.createTextNode("Total Price"))
+    var col4 = document.createElement('td');
+    col4.appendChild(document.createTextNode("Operations"))
+    row.appendChild(col1);
+    row.appendChild(col2);
+    row.appendChild(col3);
+    row.appendChild(col4);
+    table.appendChild(row)
+
+
+    for (var item in storeInstance.cart) {
+        var row = document.createElement('tr');
+        var col1 = document.createElement('td')
+        col1.appendChild(document.createTextNode(store.stock[item].label))
+        var col2 = document.createElement('td');
+        col2.appendChild(document.createTextNode(store.cart[item]))
+
+        var col3 = document.createElement('td');
+        col3.appendChild(document.createTextNode(store.cart[item] * store.stock[item].price))
+        var col4 = document.createElement('td');
+        var addBtn = document.createElement('button');
+        addBtn.setAttribute('class', 'btn-add')
+        var removeBtn = document.createElement('button');
+        addBtn.setAttribute('class', 'btn-remove')
+        col4.appendChild(addBtn);
+        col4.appendChild(removeBtn)
+
+
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.appendChild(col3);
+        row.appendChild(col4);
+
+        // row.appendChild(coldocument.createElement('td'));
+        // row.appendChild(col3);
+        row.appendChild(document.createElement('td').appendChild(document.createTextNode("123")))
+            //row.appendChild(document.createElement('td').appendChild(document.createTextNode(store.cart[item])))
+        table.appendChild(row)
+
+    }
+
+    container.appendChild(table)
+
+
+}
+
+
 window.onload = function() {
-    renderProductList(document.getElementById("productPanel", store))
+    renderProductList(document.getElementById("productView", store))
+
+
     document.getElementById('btn-show-cart').onclick = function() {
-        showCart(store.cart);
+        showCart();
     };
 
 }
