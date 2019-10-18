@@ -234,3 +234,23 @@ th,
 td {
     border: 1px solid black;
 }
+
+.btn-cartAdd {
+    background-color: green;
+    color: whitesmoke;
+    font-size: 5px;
+    height: 20px;
+    width: 30px;
+    opacity: 0.8;
+    margin: 15% auto;
+}
+
+.btn-cartRemove {
+    background-color: red;
+    color: whitesmoke;
+    font-size: 5px;
+    height: 20px;
+    width: 30px;
+    opacity: 0.8;
+    margin: 15% auto;
+}

@@ -52,6 +52,7 @@ store.onUpdate = function(itemName) {
     var previous = document.getElementById(itemName);
     previous.parentNode.replaceChild(li, previous);
 
+    renderCart(document.getElementById("modal-content"), store)
     return 0
 
 }
@@ -239,10 +240,26 @@ function renderCart(container, storeInstance) {
         var col3 = document.createElement('td');
         col3.appendChild(document.createTextNode(store.cart[item] * store.stock[item].price))
         var col4 = document.createElement('td');
+
         var addBtn = document.createElement('button');
-        addBtn.setAttribute('class', 'btn-add')
+        addBtn.setAttribute('class', 'btn-cartAdd')
+        var addButtonId = "add" + item;
+        addBtn.setAttribute('id', addButtonId);
+        addBtn.appendChild(document.createTextNode("Add"));
+        var addClick = "addToCart(\"" + item + "\")";
+        addBtn.setAttribute('onclick', addClick)
+
+
+
+
         var removeBtn = document.createElement('button');
-        addBtn.setAttribute('class', 'btn-remove')
+        removeBtn.setAttribute('class', 'btn-cartRemove')
+        var removeButtonId = "remove" + item;
+        removeBtn.setAttribute('id', removeButtonId);
+        removeBtn.appendChild(document.createTextNode("Remove"));
+        var removeClick = "removeFromCart(\"" + item + "\")";
+        removeBtn.setAttribute('onclick', removeClick)
+
         col4.appendChild(addBtn);
         col4.appendChild(removeBtn)
 
@@ -254,16 +271,43 @@ function renderCart(container, storeInstance) {
 
         // row.appendChild(coldocument.createElement('td'));
         // row.appendChild(col3);
-        row.appendChild(document.createElement('td').appendChild(document.createTextNode("123")))
-            //row.appendChild(document.createElement('td').appendChild(document.createTextNode(store.cart[item])))
+        //  row.appendChild(document.createElement('td').appendChild(document.createTextNode("123")))
+        //row.appendChild(document.createElement('td').appendChild(document.createTextNode(store.cart[item])))
         table.appendChild(row)
 
     }
+
+
+    while (container.firstChild) {
+
+        container.removeChild(container.firstChild);
+
+    }
+
+    //   container.appendChild(table);
 
     container.appendChild(table)
 
 
 }
+
+function hideCart() {
+    var myModal = document.getElementById("myModal")
+    myModal.style.display = "none";
+}
+window.addEventListener("keydown", function(event) {
+    if (event.defaultPrevented) {
+        return; // Do nothing if the event was already processed
+    }
+
+    if (event.key == "Escape") {
+        hideCart();
+    } else return;
+
+    // Cancel the default action to avoid it being handled twice
+    event.preventDefault();
+}, true);
+
 
 
 window.onload = function() {
