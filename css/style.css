@@ -114,7 +114,7 @@ ul {
 
 .btn-add {
     position: absolute;
-    background-color: green;
+    background-color: darkgreen;
     color: whitesmoke;
     font-size: 10px;
     height: 40px;
@@ -126,9 +126,13 @@ ul {
     opacity: 0.8;
 }
 
+.btn-add:hover {
+    background-color: green;
+}
+
 .btn-remove {
     position: absolute;
-    background-color: rgb(235, 80, 80);
+    background-color: darkred;
     opacity: 0.8;
     color: whitesmoke;
     font-size: 10px;
@@ -138,6 +142,10 @@ ul {
     margin-left: 110px;
     margin-top: 70px;
     line-height: 10px;
+}
+
+.btn-remove:hover {
+    background-color: red;
 }
 
 .price {
@@ -195,6 +203,10 @@ ul {
     line-height: 10px
 }
 
+#btn-show-cart:hover {
+    background-color: #8ab9ff;
+}
+
 .modal {
     display: none;
     /* Hidden by default */
@@ -236,7 +248,7 @@ td {
 }
 
 .btn-cartAdd {
-    background-color: green;
+    background-color: darkgreen;
     color: whitesmoke;
     font-size: 5px;
     height: 20px;
@@ -245,12 +257,20 @@ td {
     margin: 15% auto;
 }
 
+.btn-cartAdd:hover {
+    background-color: green;
+}
+
 .btn-cartRemove {
-    background-color: red;
+    background-color: darkred;
     color: whitesmoke;
     font-size: 5px;
     height: 20px;
     width: 30px;
     opacity: 0.8;
     margin: 15% auto;
+}
+
+.btn-cartRemove:hover {
+    background-color: red;
 }
