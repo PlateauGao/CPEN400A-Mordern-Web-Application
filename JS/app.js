@@ -48,16 +48,19 @@ var store = new Store(products);
 
 store.onUpdate = function(itemName) {
 
-    var li = document.createElement('li');
-    renderProduct(li, this, itemName);
-    var id = "product-" + itemName;
-    var previous = document.getElementById(id);
-    previous.parentNode.replaceChild(li, previous);
-
-    renderCart(document.getElementById("modal-content"), store);
-    return 0
-
+    // var li = document.createElement('li');
+    // renderProduct(li, this, itemName);
+    // var id = "product-" + itemName;
+    // var previous = document.getElementById(id);
+    // previous.parentNode.replaceChild(li, previous);
+    //
+    // renderCart(document.getElementById("modal-content"), store);
+    var productId = document.getElementById('product-' + itemName);
+    renderProduct(productId, this, itemName);
+    renderCart(document.getElementById('modal-content'), this);
 };
+
+
 Store.prototype.addItemToCart = function(itemName) {
 
 
@@ -146,9 +149,6 @@ function renderProduct(container, storeInstance, itemName) {
     container.setAttribute('id', id);
     container.setAttribute('class', 'product');
 
-
-
-
     var img = document.createElement('img');
     img.setAttribute('src', storeInstance.stock[itemName].imageUrl);
     container.appendChild(img);
@@ -191,7 +191,7 @@ function renderProductList(container, storeInstance) {
     var ul = document.createElement("ul");
     ul.setAttribute('id', "productList");
 
-    for (var i = 0; i != Object.keys(storeInstance.stock).length; i++) {
+    for (var i = 0; i < Object.keys(storeInstance.stock).length; i++) {
         var li = document.createElement('li');
         li = renderProduct(li, storeInstance, Object.keys(storeInstance.stock)[i]);
         ul.appendChild(li);
