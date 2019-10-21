@@ -187,7 +187,6 @@ function renderProductList(container, storeInstance) {
     }
 
     container.appendChild(ul);
-
 }
 
 // function showCart(cart) {
@@ -285,9 +284,12 @@ function renderCart(container, storeInstance) {
 
     //   container.appendChild(table);
 
-    container.appendChild(table)
+    container.appendChild(table);
 
-
+    var exit = document.createElement('button');
+    exit.setAttribute('id', 'exit');
+    exit.setAttribute('onclick', 'hideCart()');
+    container.appendChild(exit);
 }
 
 function hideCart() {

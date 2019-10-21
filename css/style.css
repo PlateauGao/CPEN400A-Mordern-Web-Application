@@ -237,11 +237,14 @@ ul {
     /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 50%;
     /* Could be more or less, depending on screen size */
+    height: 50%;
 }
 
-table,
+table {
+    float: left;
+}
 th,
 td {
     border: 1px solid black;
@@ -273,4 +276,11 @@ td {
 
 .btn-cartRemove:hover {
     background-color: red;
+}
+
+#exit {
+    width: 5px;
+    height: 17px;
+    background-color: red;
+    float: right;
 }
