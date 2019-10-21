@@ -2,22 +2,23 @@ var keys = [
     "Box1", "Box2", "Clothes1", "Clothes2", "Jeans", "KeyboardCombo", "Keyboard", "Mice", "PC1", "PC2", "PC3", "Tent"
 ];
 
-var labels = ["White Box", "Boxes Set", "Red Dress", "T-shirt", "Jeans", "Red Keyboard", "Colorful Keyboard", "Mouse", "Dell PC", "Intel PC Set", "Intel PC", "Tent"];
+var labels = keys;
+// ["White Box", "Boxes Set", "Red Dress", "T-shirt", "Jeans", "Red Keyboard", "Colorful Keyboard", "Mouse", "Dell PC", "Intel PC Set", "Intel PC", "Tent"];
 
 var imageUrls = [
 
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Box1_$10.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Box2_$5.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Clothes1_$20.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Clothes2_$30.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Jeans_$50.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/KeyboardCombo_$40.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Keyboard_$20.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Mice_$20.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/PC1_$350.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/PC2_$400.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/PC3_$300.png?raw=true",
-    "https://github.com/ubc-cpen400a/assignments/blob/master/assignments/images/Tent_$100.png?raw=true"
+    "images/Box2_$5.png",
+    "images/Box1_$10.png",
+    "images/Clothes1_$20.png",
+    "images/Clothes2_$30.png",
+    "images/Jeans_$50.png",
+    "images/KeyboardCombo_$40.png",
+    "images/Keyboard_$20.png",
+    "images/Mice_$20.png",
+    "images/PC1_$350.png",
+    "images/PC2_$400.png",
+    "images/PC3_$300.png",
+    "images/Tent_$100.png"
 ];
 
 var prices = [10, 5, 20, 30, 50, 40, 20, 20, 350, 400, 300, 100];
@@ -49,7 +50,8 @@ store.onUpdate = function(itemName) {
 
     var li = document.createElement('li');
     renderProduct(li, this, itemName);
-    var previous = document.getElementById(itemName);
+    var id = "product-" + itemName;
+    var previous = document.getElementById(id);
     previous.parentNode.replaceChild(li, previous);
 
     renderCart(document.getElementById("modal-content"), store);
@@ -60,13 +62,13 @@ Store.prototype.addItemToCart = function(itemName) {
 
 
     if (this.stock[itemName].quantity === 0) {
-        alert(itemName + " sold out.");
+        // alert(itemName + " sold out.");
         return;
     } else {
         this.stock[itemName].quantity--;
     }
 
-    alert("Add " + itemName + " to the cart.");
+    //  alert("Add " + itemName + " to the cart.");
     //   alert(itemName + " " + this.stock[itemName].quantity + " on the stock.");
     if (!this.cart.hasOwnProperty(itemName))
         this.cart[itemName] = 1;
@@ -79,11 +81,11 @@ Store.prototype.addItemToCart = function(itemName) {
 
 Store.prototype.removeItemFromCart = function(itemName) {
     if (!this.cart.hasOwnProperty(itemName)) {
-        alert("No " + itemName + " in the cart.");
+        //   alert("No " + itemName + " in the cart.");
         return;
     }
 
-    alert("Removing " + itemName + " from cart.");
+    //  alert("Removing " + itemName + " from cart.");
     this.cart[itemName]--;
     if (this.cart[itemName] === 0)
         delete this.cart[itemName];
@@ -119,15 +121,15 @@ var inactiveTime = 0;
 
 var timeID;
 var timerStart = function() {
-        if (inactiveTime < 3000) //3000s
-            inactiveTime++;
-        else {
-            alert('Hey there! Are you still planning to buy something?');
-            timerStop();
-            inactiveTime = 0;
-        }
-    };
-    //timeID = setInterval(timerStart, 100);
+    if (inactiveTime < 3000) //3000s
+        inactiveTime++;
+    else {
+        alert('Hey there! Are you still planning to buy something?');
+        timerStop();
+        inactiveTime = 0;
+    }
+};
+//timeID = setInterval(timerStart, 100);
 
 var timerStop = function() {
     clearTimeout(timeID);
@@ -136,15 +138,23 @@ timerStop();
 
 function renderProduct(container, storeInstance, itemName) {
     //  container = document.getElementById(1);
-    container.setAttribute('id', itemName);
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
+    var id = "product-" + itemName;
+    container.setAttribute('id', id);
     container.setAttribute('class', 'product');
+
+
+
 
     var img = document.createElement('img');
     img.setAttribute('src', storeInstance.stock[itemName].imageUrl);
     container.appendChild(img);
 
 
-    if (store.stock[itemName].quantity > 0) {
+    if (storeInstance.stock[itemName].quantity > 0) {
         var addButton = document.createElement('button');
         addButton.setAttribute('class', "btn-add");
         var addButtonId = "add" + itemName;
@@ -155,11 +165,11 @@ function renderProduct(container, storeInstance, itemName) {
         container.appendChild(addButton);
     }
 
-    if (store.cart.hasOwnProperty(itemName)) {
+    if (storeInstance.cart.hasOwnProperty(itemName)) {
         var removeButton = document.createElement('button');
         removeButton.setAttribute('class', "btn-remove");
         var removeButtonId = "remove" + itemName;
-        removeButton.setAttribute('id', addButtonId);
+        removeButton.setAttribute('id', removeButtonId);
         removeButton.appendChild(document.createTextNode("Remove"));
         var removeClick = "removeFromCart(\"" + itemName + "\")";
         removeButton.setAttribute('onclick', removeClick);
@@ -169,7 +179,8 @@ function renderProduct(container, storeInstance, itemName) {
     var priceTag = document.createElement('div');
     priceTag.setAttribute('class', "price");
     var priceLabel = document.createElement('p');
-    priceLabel.appendChild(document.createTextNode(storeInstance.stock[itemName].price))
+    priceLabel.appendChild(document.createTextNode(itemName + ": "))
+    priceLabel.appendChild(document.createTextNode("$" + storeInstance.stock[itemName].price))
     priceTag.appendChild(priceLabel);
     container.appendChild(priceTag);
 
@@ -180,28 +191,20 @@ function renderProductList(container, storeInstance) {
     var ul = document.createElement("ul");
     ul.setAttribute('id', "productList");
 
-    for (var i = 0; i != keys.length; i++) {
+    for (var i = 0; i != Object.keys(storeInstance.stock).length; i++) {
         var li = document.createElement('li');
-        li = renderProduct(li, store, keys[i]);
+        li = renderProduct(li, storeInstance, Object.keys(storeInstance.stock)[i]);
         ul.appendChild(li);
     }
-
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
     container.appendChild(ul);
 }
 
-// function showCart(cart) {
-//     var itemList = "";
-//     for (var item in cart)
-//         itemList += store.stock[item].label + ": " + cart[item] + "\n";
-//     timerStop();
-//     inactiveTime = 0;
-//     timeID = setInterval(timerStart, 1000);
-//     itemList == "" ? alert("The cart is empty") : alert(itemList);
-// }
-
 
 function showCart() {
-    var myModal = document.getElementById("myModal");
+    var myModal = document.getElementById("modal");
     myModal.style.display = "block";
     renderCart(document.getElementById("modal-content"), store);
 }
@@ -231,9 +234,9 @@ function renderCart(container, storeInstance) {
     for (var item in storeInstance.cart) {
         var row = document.createElement('tr');
         var col1 = document.createElement('td');
-        col1.appendChild(document.createTextNode(store.stock[item].label));
+        col1.appendChild(document.createTextNode(storeInstance.stock[item].label));
         var col2 = document.createElement('td');
-        col2.appendChild(document.createTextNode(store.cart[item]));
+        col2.appendChild(document.createTextNode(storeInstance.cart[item]));
 
         var col3 = document.createElement('td');
         col3.appendChild(document.createTextNode(storeInstance.cart[item] * storeInstance.stock[item].price));
@@ -286,37 +289,32 @@ function renderCart(container, storeInstance) {
 
     container.appendChild(table);
 
-    var exit = document.createElement('button');
-    exit.setAttribute('id', 'exit');
-    exit.setAttribute('onclick', 'hideCart()');
-    container.appendChild(exit);
+    // var exit = document.createElement('button');
+    // exit.setAttribute('id', 'btn-hide-cart');
+    // exit.setAttribute('onclick', 'hideCart()');
+    // var text = document.createElement("p")
+    // text.appendChild(document.createTextNode("x"))
+    // exit.appendChild(text)
+    // container.appendChild(exit);
 }
 
 function hideCart() {
-    var myModal = document.getElementById("myModal");
+    var myModal = document.getElementById("modal");
     myModal.style.display = "none";
 }
+
 window.addEventListener("keydown", function(event) {
-    if (event.defaultPrevented) {
-        return; // Do nothing if the event was already processed
-    }
 
     if (event.key === "Escape") {
         hideCart();
-    } else return;
+    }
 
-    // Cancel the default action to avoid it being handled twice
-    event.preventDefault();
-}, true);
+});
 
 
 
 window.onload = function() {
     renderProductList(document.getElementById("productView"), store);
-
-
-    document.getElementById('btn-show-cart').onclick = function() {
-        showCart();
-    };
+    document.getElementById('btn-show-cart').onclick = showCart;
 
 };

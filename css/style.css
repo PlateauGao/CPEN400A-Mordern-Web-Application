@@ -207,7 +207,7 @@ ul {
     background-color: #8ab9ff;
 }
 
-.modal {
+#modal {
     display: none;
     /* Hidden by default */
     position: fixed;
@@ -237,14 +237,15 @@ ul {
     /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 50%;
+    width: 30%;
     /* Could be more or less, depending on screen size */
-    height: 50%;
+    height: 100%;
 }
 
 table {
     float: left;
 }
+
 th,
 td {
     border: 1px solid black;
@@ -278,9 +279,16 @@ td {
     background-color: red;
 }
 
-#exit {
-    width: 5px;
-    height: 17px;
+#btn-hide-cart {
+    width: 40px;
+    height: 40px;
     background-color: red;
-    float: right;
+    float: left;
+}
+
+#btn-hide-cart p {
+    text-align: center;
+    font: caption;
+    color: aqua;
+    margin: auto;
 }
