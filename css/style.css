@@ -282,8 +282,12 @@ td {
 #btn-hide-cart {
     width: 40px;
     height: 40px;
-    background-color: red;
+    background-color: darkred;
     float: left;
+}
+
+#btn-hide-cart:hover {
+    background-color: red;
 }
 
 #btn-hide-cart p {
