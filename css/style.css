@@ -280,9 +280,16 @@ td {
 }
 
 #btn-hide-cart {
-    width: 40px;
-    height: 40px;
-    background-color: darkred;
+    width: 70px;
+    height: 70px;
+    background-color: crimson;
+    float: left;
+}
+
+#btn-check-out {
+    width: 70px;
+    height: 70px;
+    background-color: #4567b2;
     float: left;
 }
 

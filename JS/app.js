@@ -12,12 +12,12 @@ var store = new Store("https://cpen400a-bookstore.herokuapp.com");
 store.onUpdate = function(itemName) {
     if (typeof itemName == "undefined") {
         renderProductList(document.getElementById("productView"), store);
-        return;
-    }
 
-    var productId = document.getElementById('product-' + itemName);
-    renderProduct(productId, this, itemName);
-    renderCart(document.getElementById('modal-content'), this);
+    } else {
+        var productId = document.getElementById('product-' + itemName);
+        renderProduct(productId, this, itemName);
+        renderCart(document.getElementById('modal-content'), this);
+    }
 };
 var ajaxGet = function(url, onSuccess, onError) {
     var cnt = 0;
@@ -58,11 +58,12 @@ var ajaxGet = function(url, onSuccess, onError) {
 
 Store.prototype.syncWithServer = function(onSync) {
     var obj = this;
+    var delta = {}
     ajaxGet(obj.serverUrl + "/products", function(response) {
         response = JSON.parse(response)
-            // console.log(response)
+        console.log(response)
         for (var k in response) {
-            console.log(k)
+            // console.log(k)
             if (!obj.stock.hasOwnProperty(k)) {
                 obj.stock[k] = {
                     label: response[k].label,
@@ -82,7 +83,20 @@ Store.prototype.syncWithServer = function(onSync) {
 
     })
 }
+checkOutBtn = function(onFinish) {
 
+    var btn = document.getElementById("btn-check-out");
+    btn.disabled = true;
+    store.checkOut(function() {
+        btn.disabled = false;
+    });
+}
+Store.prototype.checkOut = function(onFinish) {
+    this.syncWithServer(function(delta) {
+
+    });
+    onFinish();
+}
 Store.prototype.addItemToCart = function(itemName) {
 
 
