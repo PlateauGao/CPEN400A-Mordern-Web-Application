@@ -1,65 +1,87 @@
-var keys = [
-    "Box1", "Box2", "Clothes1", "Clothes2", "Jeans", "KeyboardCombo", "Keyboard", "Mice", "PC1", "PC2", "PC3", "Tent"
-];
-
-var labels = keys;
-// ["White Box", "Boxes Set", "Red Dress", "T-shirt", "Jeans", "Red Keyboard", "Colorful Keyboard", "Mouse", "Dell PC", "Intel PC Set", "Intel PC", "Tent"];
-
-var imageUrls = [
-
-    "images/Box2_$5.png",
-    "images/Box1_$10.png",
-    "images/Clothes1_$20.png",
-    "images/Clothes2_$30.png",
-    "images/Jeans_$50.png",
-    "images/KeyboardCombo_$40.png",
-    "images/Keyboard_$20.png",
-    "images/Mice_$20.png",
-    "images/PC1_$350.png",
-    "images/PC2_$400.png",
-    "images/PC3_$300.png",
-    "images/Tent_$100.png"
-];
-
-var prices = [10, 5, 20, 30, 50, 40, 20, 20, 350, 400, 300, 100];
-var quantities = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
-
-var Store = function(initialStock) {
-    this.stock = initialStock;
+var Store = function(serverUrl) {
+    this.stock = {};
     this.cart = {};
     this.onUpdate = null;
+    this.serverUrl = serverUrl;
+
 };
 
 
-
-var products = {};
-
-var Product = function(label, imageUrl, price, quantity) {
-    this.label = label;
-    this.imageUrl = imageUrl;
-    this.price = price;
-    this.quantity = quantity;
-};
-
-for (var i = 0; i < keys.length; i++)
-    products[keys[i]] = new Product(labels[i], imageUrls[i], prices[i], quantities[i]);
-
-var store = new Store(products);
+var store = new Store("https://cpen400a-bookstore.herokuapp.com");
 
 store.onUpdate = function(itemName) {
+    if (typeof itemName == "undefined") {
+        renderProductList(document.getElementById("productView"), store);
+        return;
+    }
 
-    // var li = document.createElement('li');
-    // renderProduct(li, this, itemName);
-    // var id = "product-" + itemName;
-    // var previous = document.getElementById(id);
-    // previous.parentNode.replaceChild(li, previous);
-    //
-    // renderCart(document.getElementById("modal-content"), store);
     var productId = document.getElementById('product-' + itemName);
     renderProduct(productId, this, itemName);
     renderCart(document.getElementById('modal-content'), this);
 };
+var ajaxGet = function(url, onSuccess, onError) {
+    var cnt = 0;
+    var getHandler = function() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", url);
+        xhttp.timeout = 4000; // 4 seconds
+        xhttp.ontimeout = function() {
+            console.log("time out at: " + cnt);
+            cnt++;
+            if (cnt <= 3) getHandler();
+            else {
+                console.log("fai: error ");
+                onError(this.status)
+            }
+        }
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    console.log("success ");
+                    onSuccess(this.response)
+                } else {
+                    cnt++
+                    if (cnt >= 3) {
+                        console.log("fai: error ");
+                        onError(this.status)
+                    } else {
+                        console.log("fail:retry " + cnt + " times");
+                        getHandler()
+                    }
+                }
+            }
+        }
+        xhttp.send();
+    }
+    getHandler();
+}
 
+Store.prototype.syncWithServer = function(onSync) {
+    var obj = this;
+    ajaxGet(obj.serverUrl + "/products", function(response) {
+        response = JSON.parse(response)
+            // console.log(response)
+        for (var k in response) {
+            console.log(k)
+            if (!obj.stock.hasOwnProperty(k)) {
+                obj.stock[k] = {
+                    label: response[k].label,
+                    imageUrl: response[k].imageUrl,
+                    price: response[k].price,
+                    quantity: response[k].quantity,
+                };
+            }
+        }
+
+        obj.onUpdate();
+        if (onSync != undefined) {
+            onSync(delta); // works but not neccesarily as intended
+        }
+    }, function(error) {
+        console.log(error);
+
+    })
+}
 
 Store.prototype.addItemToCart = function(itemName) {
 
@@ -191,8 +213,10 @@ function renderProductList(container, storeInstance) {
     var ul = document.createElement("ul");
     ul.setAttribute('id', "productList");
 
+
     for (var i = 0; i < Object.keys(storeInstance.stock).length; i++) {
         var li = document.createElement('li');
+
         li = renderProduct(li, storeInstance, Object.keys(storeInstance.stock)[i]);
         ul.appendChild(li);
     }
@@ -289,13 +313,6 @@ function renderCart(container, storeInstance) {
 
     container.appendChild(table);
 
-    // var exit = document.createElement('button');
-    // exit.setAttribute('id', 'btn-hide-cart');
-    // exit.setAttribute('onclick', 'hideCart()');
-    // var text = document.createElement("p")
-    // text.appendChild(document.createTextNode("x"))
-    // exit.appendChild(text)
-    // container.appendChild(exit);
 }
 
 function hideCart() {
@@ -314,7 +331,9 @@ window.addEventListener("keydown", function(event) {
 
 
 window.onload = function() {
+    store.syncWithServer();
+
     renderProductList(document.getElementById("productView"), store);
     document.getElementById('btn-show-cart').onclick = showCart;
 
-};
+}
