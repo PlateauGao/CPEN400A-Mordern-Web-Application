@@ -6,41 +6,43 @@ var Store = function(serverUrl) {
 
 };
 
-
 var store = new Store("https://cpen400a-bookstore.herokuapp.com");
 
 store.onUpdate = function(itemName) {
     if (typeof itemName == "undefined") {
         renderProductList(document.getElementById("productView"), store);
-
     } else {
         var productId = document.getElementById('product-' + itemName);
         renderProduct(productId, this, itemName);
         renderCart(document.getElementById('modal-content'), this);
     }
 };
+
 var ajaxGet = function(url, onSuccess, onError) {
     var cnt = 0;
     var getHandler = function() {
         var xhttp = new XMLHttpRequest();
         xhttp.open("GET", url);
         xhttp.timeout = 4000; // 4 seconds
+
         xhttp.ontimeout = function() {
             console.log("time out at: " + cnt);
             cnt++;
-            if (cnt <= 3) getHandler();
+            if (cnt <= 3)
+                getHandler();
             else {
-                console.log("fai: error ");
+                console.log("fail: error ");
                 onError(this.status)
             }
-        }
+        };
+
         xhttp.onreadystatechange = function() {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
                     console.log("success ");
                     onSuccess(this.response)
                 } else {
-                    cnt++
+                    cnt++;
                     if (cnt >= 3) {
                         console.log("fai: error ");
                         onError(this.status)
@@ -50,18 +52,19 @@ var ajaxGet = function(url, onSuccess, onError) {
                     }
                 }
             }
-        }
+        };
+
         xhttp.send();
-    }
+    };
     getHandler();
-}
+};
 
 Store.prototype.syncWithServer = function(onSync) {
     var obj = this;
-    var delta = {}
+    var delta = {};
     ajaxGet(obj.serverUrl + "/products", function(response) {
-        response = JSON.parse(response)
-        console.log(response)
+        response = JSON.parse(response);
+        console.log(response);
         for (var k in response) {
             // console.log(k)
             if (!obj.stock.hasOwnProperty(k)) {
@@ -73,16 +76,14 @@ Store.prototype.syncWithServer = function(onSync) {
                 };
             }
         }
-
         obj.onUpdate();
-        if (onSync != undefined) {
+        if (onSync !== undefined) {
             onSync(delta); // works but not neccesarily as intended
         }
     }, function(error) {
         console.log(error);
-
     })
-}
+};
 checkOutBtn = function(onFinish) {
 
     var btn = document.getElementById("btn-check-out");
@@ -90,13 +91,30 @@ checkOutBtn = function(onFinish) {
     store.checkOut(function() {
         btn.disabled = false;
     });
-}
+};
 Store.prototype.checkOut = function(onFinish) {
     this.syncWithServer(function(delta) {
-
+        if (delta !== null) {
+            var alertContent = "";
+            for (var obj in delta) {
+                for (var property in obj) {
+                    var currentValue = this.stock[obj][property] + delta[obj][property];
+                    alertContent += property + " of " + obj +
+                        " changed from " + this.stock[obj][property] +
+                        " to " + currentValue + "\n";
+                }
+            }
+            alert(alertContent);
+        } else {
+            var totalAmount = 0;
+            for (var item in this.cart) {
+                totalAmount += this.cart[item] * this.stock[item].price;
+            }
+            alert("Total amount due is " + totalAmount);
+        }
     });
     onFinish();
-}
+};
 Store.prototype.addItemToCart = function(itemName) {
 
 
@@ -215,8 +233,8 @@ function renderProduct(container, storeInstance, itemName) {
     var priceTag = document.createElement('div');
     priceTag.setAttribute('class', "price");
     var priceLabel = document.createElement('p');
-    priceLabel.appendChild(document.createTextNode(itemName + ": "))
-    priceLabel.appendChild(document.createTextNode("$" + storeInstance.stock[itemName].price))
+    priceLabel.appendChild(document.createTextNode(itemName + ": "));
+    priceLabel.appendChild(document.createTextNode("$" + storeInstance.stock[itemName].price));
     priceTag.appendChild(priceLabel);
     container.appendChild(priceTag);
 
@@ -350,4 +368,4 @@ window.onload = function() {
     renderProductList(document.getElementById("productView"), store);
     document.getElementById('btn-show-cart').onclick = showCart;
 
-}
+};
