@@ -63,34 +63,37 @@ Store.prototype.syncWithServer = function(onSync) {
     var obj = this;
     var delta = {};
     ajaxGet(obj.serverUrl + "/products", function(response) {
+
         response = JSON.parse(response);
         console.log(response);
         for (var k in response) {
-            // console.log(k)
             if (!obj.stock.hasOwnProperty(k)) {
                 obj.stock[k] = {
                     label: response[k].label,
                     imageUrl: response[k].imageUrl,
                     price: response[k].price,
-                    quantity: response[k].quantity,
+                    quantity: response[k].quantity
                 };
+
                 delta[k] = {
                     price: response[k].price,
                     quantity: response[k].quantity
                 }
-            } else {
-                if (response[k].price !== obj[k].price) {
-                    delta[k].price = response[k].price - obj[k].price;
-                    this.stock[k].price = response[k].price;
+            }
+            else {
+                delta[k] = {};
+                if (response[k].price !== obj.stock[k].price) {
+                    delta[k].price = response[k].price - obj.stock[k].price;
+                    obj.stock[k].price = response[k].price;
                 }
-                if (response[k].quantity !== obj[k].quantity) {
-                    delta[k].quantity = response[k].quantity - obj[k].quantity;
-                    if (this.cart.hasOwnProperty(k)) {
-                        if (this.cart[k] < response[k].quantity)
-                            this.cart[k] = response[k].quantity;
-                        this.stock[k].quantity = response[k].quantity - this.cart[k];
+                if (response[k].quantity !== obj.stock[k].quantity) {
+                    delta[k].quantity = response[k].quantity - obj.stock[k].quantity;
+                    if (obj.cart.hasOwnProperty(k)) {
+                        if (obj.cart[k] < response[k].quantity)
+                            obj.cart[k] = response[k].quantity;
+                        obj.stock[k].quantity = response[k].quantity - obj.cart[k];
                     }
-                    this.stock[k].quantity = response[k].quantity;
+                    obj.stock[k].quantity = response[k].quantity;
                 }
             }
         }
@@ -102,32 +105,33 @@ Store.prototype.syncWithServer = function(onSync) {
         console.log(error);
     })
 };
-checkOutBtn = function(onFinish) {
+var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
-    btn.disabled = true;
+    btn.disabled = false;
     store.checkOut(function() {
-        btn.disabled = false;
+        btn.disabled = true;
     });
 };
 Store.prototype.checkOut = function(onFinish) {
-    this.syncWithServer(function(delta) {
-        if (delta === null) {
-            var total = 0;
-            for (var item in this.cart)
-                total += this.cart[item] * this.stock[item].price;
-            alert("Total amount due is " + total + ".");
-        } else {
-            var alertContent = "";
-            for (var item in delta) {
-                for (var property in delta[item]) {
-                    alertContent += property + " of " + item +
-                        " changed from " + (this.stock[k][property] - delta[k][property]) +
-                        " to " + this.stock[k][property] + "\n";
-                }
+    var obj = this;
+    obj.syncWithServer(function(delta) {
+
+        var alertContent = "";
+        for (var item in delta) {
+            for (var property in delta[item]) {
+                alertContent += property + " of " + item +
+                    " changed from " + (obj.stock[item][property] - delta[item][property]) +
+                    " to " + obj.stock[item][property] + "\n";
             }
-            alert(alertContent);
         }
+        if (alertContent === "") {
+            var total = 0;
+            for (var item in obj.cart)
+                total += obj.cart[item] * obj.stock[item].price;
+            alert("Total amount due is " + total + ".");
+        } else
+            alert(alertContent);
     });
     onFinish();
 };
