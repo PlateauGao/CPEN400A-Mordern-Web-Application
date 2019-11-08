@@ -74,6 +74,7 @@ Store.prototype.syncWithServer = function(onSync) {
                     price: response[k].price,
                     quantity: response[k].quantity,
                 };
+
             }
         }
         obj.onUpdate();
