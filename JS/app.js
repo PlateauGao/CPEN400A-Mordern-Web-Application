@@ -105,6 +105,8 @@ Store.prototype.syncWithServer = function(onSync) {
         console.log(error);
     })
 };
+
+//---------------------------------------------------------------------
 var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
@@ -113,6 +115,10 @@ var checkOutBtn = function() {
         btn.disabled = true;
     });
 };
+//---------------------------------------------------------------------
+
+
+
 Store.prototype.checkOut = function(onFinish) {
     var obj = this;
     obj.syncWithServer(function(delta) {
