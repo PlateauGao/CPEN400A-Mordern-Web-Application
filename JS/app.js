@@ -63,56 +63,61 @@ Store.prototype.syncWithServer = function(onSync) {
     var obj = this;
     var delta = {};
     ajaxGet(obj.serverUrl + "/products", function(response) {
+
         response = JSON.parse(response);
         console.log(response);
         for (var k in response) {
-            // console.log(k)
             if (!obj.stock.hasOwnProperty(k)) {
                 obj.stock[k] = {
                     label: response[k].label,
                     imageUrl: response[k].imageUrl,
                     price: response[k].price,
-                    quantity: response[k].quantity,
+                    quantity: response[k].quantity
                 };
 
             }
         }
         obj.onUpdate();
         if (onSync !== undefined) {
-            onSync(delta); // works but not neccesarily as intended
+            onSync(delta); // works but not necessarily as intended
         }
     }, function(error) {
         console.log(error);
     })
 };
-checkOutBtn = function(onFinish) {
+
+//---------------------------------------------------------------------
+var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
-    btn.disabled = true;
+    btn.disabled = false;
     store.checkOut(function() {
-        btn.disabled = false;
+        btn.disabled = true;
     });
 };
+//---------------------------------------------------------------------
+
+
+
 Store.prototype.checkOut = function(onFinish) {
-    this.syncWithServer(function(delta) {
-        if (delta !== null) {
-            var alertContent = "";
-            for (var obj in delta) {
-                for (var property in obj) {
-                    var currentValue = this.stock[obj][property] + delta[obj][property];
-                    alertContent += property + " of " + obj +
-                        " changed from " + this.stock[obj][property] +
-                        " to " + currentValue + "\n";
-                }
+    var obj = this;
+    obj.syncWithServer(function(delta) {
+
+        var alertContent = "";
+        for (var item in delta) {
+            for (var property in delta[item]) {
+                alertContent += property + " of " + item +
+                    " changed from " + (obj.stock[item][property] - delta[item][property]) +
+                    " to " + obj.stock[item][property] + "\n";
             }
-            alert(alertContent);
-        } else {
-            var totalAmount = 0;
-            for (var item in this.cart) {
-                totalAmount += this.cart[item] * this.stock[item].price;
-            }
-            alert("Total amount due is " + totalAmount);
         }
+        if (alertContent === "") {
+            var total = 0;
+            for (var item in obj.cart)
+                total += obj.cart[item] * obj.stock[item].price;
+            alert("Total amount due is " + total + ".");
+        } else
+            alert(alertContent);
     });
     onFinish();
 };
