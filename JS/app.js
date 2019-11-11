@@ -39,8 +39,8 @@ var ajaxGet = function(url, onSuccess, onError) {
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4) {
                 if (this.status === 200) {
-                    console.log("success ");
-                    onSuccess(this.response)
+                    response = JSON.parse(this.response);
+                    onSuccess(response)
                 } else {
                     cnt++;
                     if (cnt >= 3) {
@@ -63,8 +63,8 @@ Store.prototype.syncWithServer = function(onSync) {
     var obj = this;
     var delta = {};
     ajaxGet(obj.serverUrl + "/products", function(response) {
+        //response = response.response;
 
-        response = JSON.parse(response);
         console.log(response);
         for (var k in response) {
             if (!obj.stock.hasOwnProperty(k)) {
@@ -87,7 +87,7 @@ Store.prototype.syncWithServer = function(onSync) {
                 if (!obj.cart.hasOwnProperty(k)) {
                     delta[k].quantity = response[k].quantity - obj.stock[k].quantity;
                     obj.stock[k].quantity = response[k].quantity;
-                } else {
+                } else { //item in cart requireds changing
                     delta[k].quantity = response[k].quantity - obj.stock[k].quantity - obj.cart[k];
                     if (obj.cart[k] > response[k].quantity)
                         obj.cart[k] = response[k].quantity;
@@ -109,7 +109,10 @@ Store.prototype.syncWithServer = function(onSync) {
 var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
+    console.log(btn);
+
     btn.disabled = true;
+    console.log(btn.disabled);
     store.checkOut(function() {
         btn.disabled = false;
     });
@@ -118,7 +121,7 @@ var checkOutBtn = function() {
 
 Store.prototype.checkOut = function(onFinish) {
     var obj = this;
-    console.log(obj.cart);
+    // console.log(obj.cart);
     obj.syncWithServer(function(delta) {
         var alertPrice = "";
         var alertQuantity = "";
@@ -308,8 +311,6 @@ function showCart() {
 
 function renderCart(container, storeInstance) {
     var table = document.createElement('table');
-
-
     var row = document.createElement('tr');
 
     var col1 = document.createElement('th');
@@ -381,6 +382,16 @@ function renderCart(container, storeInstance) {
     //   container.appendChild(table);
 
     container.appendChild(table);
+
+    // if (document.getElementById("btn-check-out") == null) {
+    //     // var parent = container.parentNode;
+    //     var checkOutButton = document.createElement('BUTTON');
+    //     var buttonText = document.createTextNode("Check Out");
+    //     checkOutButton.setAttribute('id', 'btn-check-out');
+    //     checkOutButton.addEventListener('click', checkOutBtn);
+    //     checkOutButton.appendChild(buttonText);
+    //     container.appendChild(checkOutButton);
+    // }
 
 }
 
