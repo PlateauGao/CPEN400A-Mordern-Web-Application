@@ -74,19 +74,38 @@ Store.prototype.syncWithServer = function(onSync) {
                     price: response[k].price,
                     quantity: response[k].quantity
                 };
+                delta[k] = {
+                    price: response[k].price,
+                    quantity: response[k].quantity
+                }
+            } else {
+                delta[k] = {};
 
+                delta[k].price = response[k].price - obj.stock[k].price;
+                obj.stock[k].price = response[k].price;
+
+                if (!obj.cart.hasOwnProperty(k)) {
+                    delta[k].quantity = response[k].quantity - obj.stock[k].quantity;
+                    obj.stock[k].quantity = response[k].quantity;
+                } else {
+                    delta[k].quantity = response[k].quantity - obj.stock[k].quantity - obj.cart[k];
+                    if (obj.cart[k] > response[k].quantity)
+                        obj.cart[k] = response[k].quantity;
+                    obj.stock[k].quantity = response[k].quantity - obj.cart[k];
+                    if (obj.cart[k] === 0)
+                        delete obj.cart[k];
+                }
             }
+            renderCart(document.getElementById('modal-content'), obj);
         }
         obj.onUpdate();
-        if (onSync !== undefined) {
+        if (onSync !== undefined)
             onSync(delta); // works but not necessarily as intended
-        }
     }, function(error) {
         console.log(error);
     })
 };
 
-//---------------------------------------------------------------------
 var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
@@ -95,29 +114,44 @@ var checkOutBtn = function() {
         btn.disabled = false;
     });
 };
-//---------------------------------------------------------------------
-
 
 
 Store.prototype.checkOut = function(onFinish) {
     var obj = this;
+    console.log(obj.cart);
     obj.syncWithServer(function(delta) {
-
-        var alertContent = "";
+        var alertPrice = "";
+        var alertQuantity = "";
         for (var item in delta) {
-            for (var property in delta[item]) {
-                alertContent += property + " of " + item +
-                    " changed from " + (obj.stock[item][property] - delta[item][property]) +
-                    " to " + obj.stock[item][property] + "\n";
+            if (delta[item].price !== 0) {
+                var prevPrice = obj.stock[item].price - delta[item].price;
+                var currPrice = obj.stock[item].price;
+                alertPrice += "Price of " + item + " changed from " +
+                    prevPrice + " to " + currPrice + "\n";
+            }
+            if (delta[item].quantity !== 0) {
+                var prevQuantity;
+                var currQuantity;
+                if (obj.cart.hasOwnProperty(item)) {
+                    prevQuantity = obj.stock[item].quantity + obj.cart[item] - delta[item].quantity;
+                    currQuantity = obj.stock[item].quantity + obj.cart[item];
+                } else {
+                    prevQuantity = obj.stock[item].quantity - delta[item].quantity;
+                    currQuantity = obj.stock[item].quantity;
+                }
+                alertQuantity += "Quantity of " + item + " changed from " +
+                    prevQuantity + " to " + currQuantity + "\n";
             }
         }
-        if (alertContent === "") {
+        if (alertPrice === "" && alertQuantity === "") {
             var total = 0;
             for (var item in obj.cart)
                 total += obj.cart[item] * obj.stock[item].price;
             alert("Total amount due is " + total + ".");
-        } else
+        } else {
+            var alertContent = alertPrice + "\n" + alertQuantity;
             alert(alertContent);
+        }
     });
     onFinish();
 };
@@ -311,9 +345,6 @@ function renderCart(container, storeInstance) {
         addBtn.appendChild(document.createTextNode("Add"));
         var addClick = "addToCart(\"" + item + "\")";
         addBtn.setAttribute('onclick', addClick);
-
-
-
 
         var removeBtn = document.createElement('button');
         removeBtn.setAttribute('class', 'btn-cartRemove');
