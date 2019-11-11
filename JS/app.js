@@ -90,9 +90,9 @@ Store.prototype.syncWithServer = function(onSync) {
 var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
-    btn.disabled = false;
+    btn.disabled = true;
     store.checkOut(function() {
-        btn.disabled = true;
+        btn.disabled = false;
     });
 };
 //---------------------------------------------------------------------
