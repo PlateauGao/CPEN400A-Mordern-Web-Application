@@ -409,40 +409,40 @@ window.addEventListener("keydown", function(event) {
     }
 
 });
-
+////////////////////
 Store.prototype.queryProducts = function(query, callback) {
-    var self = this;
-    var queryString = Object.keys(query).reduce(function(acc, key) {
-        return acc + (query[key] ? ((acc ? '&' : '') + key + '=' + query[key]) : '');
-    }, '');
-    ajaxGet(this.serverUrl + "/products?" + queryString,
-        function(products) {
-            Object.keys(products)
-                .forEach(function(itemName) {
-                    var rem = products[itemName].quantity - (self.cart[itemName] || 0);
-                    if (rem >= 0) {
-                        self.stock[itemName].quantity = rem;
-                    } else {
-                        self.stock[itemName].quantity = 0;
-                        self.cart[itemName] = products[itemName].quantity;
-                        if (self.cart[itemName] === 0) delete self.cart[itemName];
-                    }
+        var self = this;
+        var queryString = Object.keys(query).reduce(function(acc, key) {
+            return acc + (query[key] ? ((acc ? '&' : '') + key + '=' + query[key]) : '');
+        }, '');
+        ajaxGet(this.serverUrl + "/products?" + queryString,
+            function(products) {
+                Object.keys(products)
+                    .forEach(function(itemName) {
+                        var rem = products[itemName].quantity - (self.cart[itemName] || 0);
+                        if (rem >= 0) {
+                            self.stock[itemName].quantity = rem;
+                        } else {
+                            self.stock[itemName].quantity = 0;
+                            self.cart[itemName] = products[itemName].quantity;
+                            if (self.cart[itemName] === 0) delete self.cart[itemName];
+                        }
 
-                    self.stock[itemName] = Object.assign(self.stock[itemName], {
-                        price: products[itemName].price,
-                        label: products[itemName].label,
-                        imageUrl: products[itemName].imageUrl
+                        self.stock[itemName] = Object.assign(self.stock[itemName], {
+                            price: products[itemName].price,
+                            label: products[itemName].label,
+                            imageUrl: products[itemName].imageUrl
+                        });
                     });
-                });
-            self.onUpdate();
-            callback(null, products);
-        },
-        function(error) {
-            callback(error);
-        }
-    )
-}
-
+                self.onUpdate();
+                callback(null, products);
+            },
+            function(error) {
+                callback(error);
+            }
+        )
+    }
+    /////////////////////
 function renderMenu(container, storeInstance) {
     while (container.lastChild) container.removeChild(container.lastChild);
     if (!container._filters) {
@@ -516,7 +516,7 @@ function renderMenu(container, storeInstance) {
 }
 
 
-
+///////////////////////
 
 window.onload = function() {
     store.syncWithServer(function(delta) {
