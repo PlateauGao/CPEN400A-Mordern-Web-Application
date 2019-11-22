@@ -1,4 +1,4 @@
-var displayed = [];
+let displayed = [];
 
 
 var Store = function(serverUrl) {
@@ -13,9 +13,10 @@ var store = new Store("http://localhost:3000");
 
 store.onUpdate = function(itemName) {
     if (typeof itemName == "undefined") {
+
         renderProductList(document.getElementById("productView"), this);
     } else {
-        renderMenu(document.getElementById("menuView"), this);
+        //   renderMenu(document.getElementById("menuView"), this);
         var productId = document.getElementById('product-' + itemName);
         renderProduct(productId, this, itemName);
         renderCart(document.getElementById('modal-content'), this);
@@ -249,7 +250,9 @@ function renderProduct(container, storeInstance, itemName) {
     var id = "product-" + itemName;
     container.setAttribute('id', id);
     container.setAttribute('class', 'product');
-
+    console.log(storeInstance.stock)
+    console.log(itemName)
+    console.log(storeInstance.stock[itemName])
     var img = document.createElement('img');
     img.setAttribute('src', storeInstance.stock[itemName].imageUrl);
     container.appendChild(img);
@@ -292,7 +295,8 @@ function renderProductList(container, storeInstance) {
     var ul = document.createElement("ul");
     ul.setAttribute('id', "productList");
 
-    for (var i = 0; i < displayed.length; i++) {
+    for (var i in displayed) {
+
         var li = document.createElement('li');
         li = renderProduct(li, storeInstance, displayed[i]);
         ul.appendChild(li);
@@ -457,6 +461,7 @@ function renderMenu(container, storeInstance) {
                     alert('Error occurred trying to query products');
                     console.log(err);
                 } else {
+
                     displayed = Object.keys(products);
                     renderProductList(document.getElementById('productView'), storeInstance);
                 }
@@ -520,9 +525,11 @@ function renderMenu(container, storeInstance) {
 
 window.onload = function() {
     store.syncWithServer(function(delta) {
+
         for (var each in delta) {
             displayed.push(each);
         }
+        renderProductList(document.getElementById("productView"), store);
     });
 
     renderProductList(document.getElementById("productView"), store);
