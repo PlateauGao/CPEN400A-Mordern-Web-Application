@@ -22,25 +22,42 @@ function StoreDB(mongoUrl, dbName) {
         )
     });
 }
-
 StoreDB.prototype.getProducts = function(queryParams) {
     return this.connected.then(function(db) {
-        return new Promise((resolve, reject) => {
-            db.collection("products").find().toArray((err, products) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
+        var query = { $and: [] };
+        if (queryParams.minPrice) {
+            query["$and"].push({
+                "price": {
+                    $gte: parseInt(queryParams.minPrice)
                 }
-
-                let productsObj = {};
-                for (let product of products) {
-                    productsObj[product._id] = product;
-                }
-
-                resolve(productsObj);
             })
+        }
+        if (queryParams.maxPrice) {
+            query["$and"].push({
+                "price": {
+                    $lte: parseInt(queryParams.maxPrice)
+                }
+            })
+        }
+        if (queryParams.category) {
+            query["$and"].push({
+                "category": queryParams.category
+            })
+        }
+        if (query.$and.length == 0) {
+            query = {}
+        }
+        return db.collection("products").find(query).toArray().then(function(result) {
+            var products = {};
+            for (var i = 0; i != result.length; i++) {
+                console.log(i)
+                products[result[i]._id] = result[i];
+            }
+            return products;
+        }, function(err) {
+            throw err;
         });
-    });
+    })
 }
 
 StoreDB.prototype.addOrder = function(order) {

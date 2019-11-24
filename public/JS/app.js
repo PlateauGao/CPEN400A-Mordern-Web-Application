@@ -9,20 +9,37 @@ var Store = function(serverUrl) {
 
 };
 
-var store = new Store("http://localhost:3000");
+var store = new Store("http://localhost:3003");
 
 store.onUpdate = function(itemName) {
     if (typeof itemName == "undefined") {
 
         renderProductList(document.getElementById("productView"), this);
-    } else {
-        //   renderMenu(document.getElementById("menuView"), this);
+    }
+    //   renderMenu(document.getElementById("menuView"), this);
+    else {
         var productId = document.getElementById('product-' + itemName);
         renderProduct(productId, this, itemName);
-        renderCart(document.getElementById('modal-content'), this);
     }
+    renderCart(document.getElementById('modal-content'), this);
+    renderMenu(document.getElementById("menuView"), this);
 };
+var ajaxPost = function(url, data, onSuccess, onError) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", url, true);
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
+    xhttp.onreadystatechange = function() { // Call a function when the state changes.
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            // Request finished. Do processing here.
+            onSuccess(JSON.parse(req.response));
+        } else {
+            onError(req.response);
+        }
+    }
+    req.onerror = onError;
+    req.send(JSON.stringify(data))
+}
 var ajaxGet = function(url, onSuccess, onError) {
     var cnt = 0;
     var getHandler = function() {
@@ -61,6 +78,7 @@ var ajaxGet = function(url, onSuccess, onError) {
 
         xhttp.send();
     };
+
     getHandler();
 };
 
@@ -250,9 +268,7 @@ function renderProduct(container, storeInstance, itemName) {
     var id = "product-" + itemName;
     container.setAttribute('id', id);
     container.setAttribute('class', 'product');
-    console.log(storeInstance.stock)
-    console.log(itemName)
-    console.log(storeInstance.stock[itemName])
+
     var img = document.createElement('img');
     img.setAttribute('src', storeInstance.stock[itemName].imageUrl);
     container.appendChild(img);

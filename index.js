@@ -3,7 +3,7 @@ var path = require('path');
 var express = require('express');
 // s
 // Declare application parameters
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3003;
 var STATIC_ROOT = path.resolve(__dirname, './public');
 var StoreDB = require('./StoreDB.js');
 var db = new StoreDB("mongodb://127.0.0.1:27017", "cpen400a-bookstore");
@@ -30,30 +30,12 @@ app.use('/', express.static(STATIC_ROOT)); // Serve STATIC_ROOT at URL "/" as a 
 
 // Configure '/products' endpoint
 app.get('/products', function(request, response) {
-    let query = {};
-    const category = request.query.category;
-    if (category != null) {
-        query["category"] = category;
-    }
-
-    const minPrice = request.query.minPrice;
-    if (minPrice != null) {
-        query["minPrice"] = minPrice;
-    }
-
-    const maxPrice = request.query.maxPrice;
-    if (maxPrice != null) {
-        query["maxPrice"] = maxPrice;
-    }
-
-    db.getProducts(query)
-        .then((products) => {
-            return response.json(products);
-        })
-        .catch((err) => {
-            console.log(err);
-            return response.status(500).send("Error fetching products");
-        })
+    return db.getProducts(request.query).then(function(result) {
+        return response.json(result);
+    }, function(err) {
+        response.statusCode = 500;
+        console.log("get error")
+    })
 });
 
 // Start listening on TCP port
