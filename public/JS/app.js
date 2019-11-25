@@ -9,7 +9,7 @@ var Store = function(serverUrl) {
 
 };
 
-var store = new Store("http://localhost:3003");
+var store = new Store("http://localhost:3000");
 
 store.onUpdate = function(itemName) {
     if (typeof itemName == "undefined") {
@@ -33,12 +33,11 @@ var ajaxPost = function(url, data, onSuccess, onError) {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             // Request finished. Do processing here.
             onSuccess(JSON.parse(xhttp.response));
-        } else {
-            onError(xhttp.response);
         }
     }
     xhttp.onerror = onError;
-    xhttp.send(JSON.stringify(data))
+    var req = JSON.stringify(data)
+    xhttp.send(req)
 }
 var ajaxGet = function(url, onSuccess, onError) {
     var cnt = 0;
@@ -172,20 +171,16 @@ Store.prototype.checkOut = function(onFinish) {
             for (var item in obj.cart)
                 total += obj.cart[item] * obj.stock[item].price;
             var order = {
-                client_id: Math.random().toString(),
+                client_id: Math.floor(Math.random() * 101).toString(),
                 cart: obj.cart,
                 total: total
             };
-            var x = 0
-
             ajaxPost(obj.serverUrl + "/checkout", order, function() {
                 alert("Successful check out");
                 obj.cart = {};
                 obj.onUpdate();
             }, function() {
-
-                alert("error" + x);
-                x = x + 1;
+                alert("check out error");
             });
         } else {
             var alertContent = alertPrice + "\n" + alertQuantity;

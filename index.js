@@ -3,7 +3,7 @@ var path = require('path');
 var express = require('express');
 // s
 // Declare application parameters
-var PORT = process.env.PORT || 3003;
+var PORT = process.env.PORT || 3000;
 var STATIC_ROOT = path.resolve(__dirname, './public');
 var StoreDB = require('./StoreDB.js');
 var db = new StoreDB("mongodb://127.0.0.1:27017", "cpen400a-bookstore");
@@ -37,6 +37,30 @@ app.get('/products', function(request, response) {
         console.log("get error")
     })
 });
+
+
+app.post('/checkout', function(request, response, next) {
+
+    var order = request.body;
+
+    var valid = order.hasOwnProperty("client_id") && typeof order.client_id == "string" &&
+        order.hasOwnProperty("cart") && typeof order.cart == "object" &&
+        order.hasOwnProperty("total") && typeof order.total == "number";
+    if (!valid) {
+        console.log('Validation Failed')
+        response.statusCode = 500;
+        return;
+    } else {
+        return db.addOrder(order).then(function(resolvedId) {
+            return response.json({ id: resolvedId });
+        }, function(err) {
+            response.statusCode = 500;
+            console.log('Add Order Failed')
+        });
+    }
+});
+
+
 
 // Start listening on TCP port
 app.listen(PORT, function() {

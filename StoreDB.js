@@ -50,7 +50,7 @@ StoreDB.prototype.getProducts = function(queryParams) {
         return db.collection("products").find(query).toArray().then(function(result) {
             var products = {};
             for (var i = 0; i != result.length; i++) {
-                console.log(i)
+
                 products[result[i]._id] = result[i];
             }
             return products;
@@ -61,43 +61,31 @@ StoreDB.prototype.getProducts = function(queryParams) {
 }
 
 StoreDB.prototype.addOrder = function(order) {
+
     return this.connected.then(function(db) {
-        var cart = order.cart;
-        var cartItemNames = Object.getOwnPropertyNames(cart);
-        var promises = [];
+        return new Promise(function(resolve, reject) {
+            db.collection("orders").insertOne(order)
+                .then((result) => {
+                    var cnt = Object.keys(order.cart).length;
+                    for (var product in order.cart) {
+                        var quantity = order.cart[product];
+                        db.collection("products").updateOne({ "_id": product }, { $inc: { "quantity": -quantity } })
+                            .then(result2 => {
+                                cnt--;
+                                if (cnt == 0) {
+                                    resolve(result.insertedId);
+                                }
+                            }, err => {
+                                reject(error);
+                            });
+                    }
+                }, (error) => {
+                    reject(error);
+                });
 
-        for (var i = 0; i < cartItemNames.length; i++) {
-            var cartItemName = cartItemNames[i];
-            var quantity = cart[cartItemName];
-            promises.push(db.collection("products").findOne({
-                "_id": cartItemName,
-                "quantity": { "$gte": quantity }
-            }));
-        }
+        })
 
-        return Promise.all(promises).then(function(results) {
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
-                if (!result) {
-                    throw "Either " + cartItemNames[i] + " does not exist or quantity too low";
-                }
-            }
-
-            for (var i = 0; i < cartItemNames.length; i++) {
-                var cartItemName = cartItemNames[i];
-                var quantity = order.cart[cartItemName];
-                var updated = db.collection("products").updateOne({ "_id": cartItemName, "quantity": { "$gte": quantity } }, { "$inc": { "quantity": -Math.abs(quantity) } });
-                if (!updated || !updated.modifiedCount < 1) {
-                    throw "Could not update " + cartItemName + " with quantity " + quantity;
-                }
-            }
-            return db.collection("orders").insertOne(order).then(function(result) {
-                if (!result || result.insertedCount !== 1 || typeof result.insertedId == "undefined") {
-                    throw "Could not insert order";
-                }
-                return result.insertedId;
-            });
-        });
     })
 }
+
 module.exports = StoreDB;
