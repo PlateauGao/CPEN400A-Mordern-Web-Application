@@ -62,8 +62,42 @@ StoreDB.prototype.getProducts = function(queryParams) {
 
 StoreDB.prototype.addOrder = function(order) {
     return this.connected.then(function(db) {
-        // TODO: Implement functionality
+        var cart = order.cart;
+        var cartItemNames = Object.getOwnPropertyNames(cart);
+        var promises = [];
+
+        for (var i = 0; i < cartItemNames.length; i++) {
+            var cartItemName = cartItemNames[i];
+            var quantity = cart[cartItemName];
+            promises.push(db.collection("products").findOne({
+                "_id": cartItemName,
+                "quantity": { "$gte": quantity }
+            }));
+        }
+
+        return Promise.all(promises).then(function(results) {
+            for (var i = 0; i < results.length; i++) {
+                var result = results[i];
+                if (!result) {
+                    throw "Either " + cartItemNames[i] + " does not exist or quantity too low";
+                }
+            }
+
+            for (var i = 0; i < cartItemNames.length; i++) {
+                var cartItemName = cartItemNames[i];
+                var quantity = order.cart[cartItemName];
+                var updated = db.collection("products").updateOne({ "_id": cartItemName, "quantity": { "$gte": quantity } }, { "$inc": { "quantity": -Math.abs(quantity) } });
+                if (!updated || !updated.modifiedCount < 1) {
+                    throw "Could not update " + cartItemName + " with quantity " + quantity;
+                }
+            }
+            return db.collection("orders").insertOne(order).then(function(result) {
+                if (!result || result.insertedCount !== 1 || typeof result.insertedId == "undefined") {
+                    throw "Could not insert order";
+                }
+                return result.insertedId;
+            });
+        });
     })
 }
-
 module.exports = StoreDB;

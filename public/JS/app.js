@@ -32,13 +32,13 @@ var ajaxPost = function(url, data, onSuccess, onError) {
     xhttp.onreadystatechange = function() { // Call a function when the state changes.
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             // Request finished. Do processing here.
-            onSuccess(JSON.parse(req.response));
+            onSuccess(JSON.parse(xhttp.response));
         } else {
-            onError(req.response);
+            onError(xhttp.response);
         }
     }
-    req.onerror = onError;
-    req.send(JSON.stringify(data))
+    xhttp.onerror = onError;
+    xhttp.send(JSON.stringify(data))
 }
 var ajaxGet = function(url, onSuccess, onError) {
     var cnt = 0;
@@ -88,7 +88,7 @@ Store.prototype.syncWithServer = function(onSync) {
     ajaxGet(obj.serverUrl + "/products", function(response) {
         //response = response.response;
 
-        console.log(response);
+        //   console.log(response);
         for (var k in response) {
             if (!obj.stock.hasOwnProperty(k)) {
                 obj.stock[k] = {
@@ -132,10 +132,7 @@ Store.prototype.syncWithServer = function(onSync) {
 var checkOutBtn = function() {
 
     var btn = document.getElementById("btn-check-out");
-    console.log(btn);
-
     btn.disabled = true;
-    console.log(btn.disabled);
     store.checkOut(function() {
         btn.disabled = false;
     });
@@ -146,6 +143,7 @@ Store.prototype.checkOut = function(onFinish) {
     var obj = this;
     // console.log(obj.cart);
     obj.syncWithServer(function(delta) {
+
         var alertPrice = "";
         var alertQuantity = "";
         for (var item in delta) {
@@ -173,7 +171,22 @@ Store.prototype.checkOut = function(onFinish) {
             var total = 0;
             for (var item in obj.cart)
                 total += obj.cart[item] * obj.stock[item].price;
-            alert("Total amount due is " + total + ".");
+            var order = {
+                client_id: Math.random().toString(),
+                cart: obj.cart,
+                total: total
+            };
+            var x = 0
+
+            ajaxPost(obj.serverUrl + "/checkout", order, function() {
+                alert("Successful check out");
+                obj.cart = {};
+                obj.onUpdate();
+            }, function() {
+
+                alert("error" + x);
+                x = x + 1;
+            });
         } else {
             var alertContent = alertPrice + "\n" + alertQuantity;
             alert(alertContent);
@@ -405,15 +418,6 @@ function renderCart(container, storeInstance) {
 
     container.appendChild(table);
 
-    // if (document.getElementById("btn-check-out") == null) {
-    //     // var parent = container.parentNode;
-    //     var checkOutButton = document.createElement('BUTTON');
-    //     var buttonText = document.createTextNode("Check Out");
-    //     checkOutButton.setAttribute('id', 'btn-check-out');
-    //     checkOutButton.addEventListener('click', checkOutBtn);
-    //     checkOutButton.appendChild(buttonText);
-    //     container.appendChild(checkOutButton);
-    // }
 
 }
 
