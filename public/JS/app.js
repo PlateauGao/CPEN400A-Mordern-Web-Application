@@ -430,10 +430,9 @@ window.addEventListener("keydown", function(event) {
 });
 ////////////////////
 Store.prototype.queryProducts = function(query, callback) {
-        var self = this;
-        var queryString = Object.keys(query).reduce(function(acc, key) {
-            return acc + (query[key] ? ((acc ? '&' : '') + key + '=' + query[key]) : '');
-        }, '');
+    var self = this;
+    var queryString = Object.keys(query).reduce(function(acc, key) {
+        return acc + (query[key] ? ((acc ? '&' : '') + key + '=' + query[key]) : '');}, '');
         ajaxGet(this.serverUrl + "/products?" + queryString,
             function(products) {
                 Object.keys(products)

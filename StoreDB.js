@@ -58,34 +58,35 @@ StoreDB.prototype.getProducts = function(queryParams) {
             throw err;
         });
     })
-}
+};
 
 StoreDB.prototype.addOrder = function(order) {
-
     return this.connected.then(function(db) {
         return new Promise(function(resolve, reject) {
             db.collection("orders").insertOne(order)
                 .then((result) => {
-                    var cnt = Object.keys(order.cart).length;
-                    for (var product in order.cart) {
-                        var quantity = order.cart[product];
-                        db.collection("products").updateOne({ "_id": product }, { $inc: { "quantity": -quantity } })
-                            .then(result2 => {
-                                cnt--;
-                                if (cnt == 0) {
-                                    resolve(result.insertedId);
-                                }
-                            }, err => {
-                                reject(error);
-                            });
+                    if (order.cart == null)
+                        reject(result);
+                    else {
+                        var cnt = Object.keys(order.cart).length;
+                        for (var product in order.cart) {
+                            var quantity = order.cart[product];
+                            db.collection("products").updateOne({"_id": product}, {$inc: {"quantity": -quantity}})
+                                .then(result2 => {
+                                    cnt--;
+                                    if (cnt === 0) {
+                                        resolve(result.insertedId);
+                                    }
+                                }, err => {
+                                    reject(err);
+                                });
+                        }
                     }
                 }, (error) => {
                     reject(error);
                 });
-
         })
-
     })
-}
+};
 
 module.exports = StoreDB;

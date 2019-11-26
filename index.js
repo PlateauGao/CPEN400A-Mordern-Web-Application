@@ -47,14 +47,14 @@ app.post('/checkout', function(request, response, next) {
         order.hasOwnProperty("cart") && typeof order.cart == "object" &&
         order.hasOwnProperty("total") && typeof order.total == "number";
     if (!valid) {
-        console.log('Validation Failed')
+        console.log('Validation Failed');
         response.statusCode = 500;
         return;
     } else {
         return db.addOrder(order).then(function(resolvedId) {
             return response.json({ id: resolvedId });
         }, function(err) {
-            response.statusCode = 500;
+            err.statusCode = 500;
             console.log('Add Order Failed')
         });
     }
