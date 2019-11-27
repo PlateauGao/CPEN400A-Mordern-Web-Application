@@ -39,13 +39,13 @@ app.get('/products', function(request, response) {
 });
 
 
-app.post('/checkout', function(request, response, next) {
+app.post('/checkout', function(request, response) {
 
     var order = request.body;
 
-    var valid = order.hasOwnProperty("client_id") && typeof order.client_id == "string" &&
-        order.hasOwnProperty("cart") && typeof order.cart == "object" &&
-        order.hasOwnProperty("total") && typeof order.total == "number";
+    var valid = order.hasOwnProperty("client_id") && typeof(order.client_id) == "string" &&
+        order.hasOwnProperty("cart") && typeof(order.cart) == "object" &&
+        order.hasOwnProperty("total") && typeof(order.total) == "number";
     if (!valid) {
         console.log('Validation Failed');
         response.statusCode = 500;

@@ -50,7 +50,6 @@ StoreDB.prototype.getProducts = function(queryParams) {
         return db.collection("products").find(query).toArray().then(function(result) {
             var products = {};
             for (var i = 0; i != result.length; i++) {
-
                 products[result[i]._id] = result[i];
             }
             return products;
@@ -71,12 +70,9 @@ StoreDB.prototype.addOrder = function(order) {
                         var cnt = Object.keys(order.cart).length;
                         for (var product in order.cart) {
                             var quantity = order.cart[product];
-                            db.collection("products").updateOne({"_id": product}, {$inc: {"quantity": -quantity}})
+                            db.collection("products").updateOne({ "_id": product }, { $inc: { "quantity": -quantity } })
                                 .then(result2 => {
-                                    cnt--;
-                                    if (cnt === 0) {
-                                        resolve(result.insertedId);
-                                    }
+                                    resolve(result2.insertedId);
                                 }, err => {
                                     reject(err);
                                 });
